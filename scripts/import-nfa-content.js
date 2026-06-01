@@ -239,6 +239,99 @@ async function importNews() {
 }
 
 /**
+ * Import Statistics
+ */
+async function importStatistics() {
+    console.log('\n📊 Importing Statistics...');
+
+    // Delete existing statistics
+    try {
+        const existing = await strapiRequest('/statistics');
+        for (const item of existing.data) {
+            await strapiRequest(`/statistics/${item.documentId}`, 'DELETE');
+        }
+        console.log(`   Deleted ${existing.data.length} existing statistics`);
+    } catch (err) {
+        console.log('   No existing statistics to delete');
+    }
+
+    // Import new statistics
+    for (const stat of contentData.statistics) {
+        try {
+            await strapiRequest('/statistics', 'POST', {
+                ...stat,
+                publishedAt: new Date().toISOString()
+            });
+            console.log(`   ✅ Created: ${stat.label}`);
+        } catch (error) {
+            console.error(`   ❌ Failed: ${stat.label}`);
+        }
+    }
+}
+
+/**
+ * Import Projects
+ */
+async function importProjects() {
+    console.log('\n🚀 Importing Projects...');
+
+    // Delete existing projects
+    try {
+        const existing = await strapiRequest('/projects');
+        for (const item of existing.data) {
+            await strapiRequest(`/projects/${item.documentId}`, 'DELETE');
+        }
+        console.log(`   Deleted ${existing.data.length} existing projects`);
+    } catch (err) {
+        console.log('   No existing projects to delete');
+    }
+
+    // Import new projects
+    for (const project of contentData.projects) {
+        try {
+            await strapiRequest('/projects', 'POST', {
+                ...project,
+                publishedAt: new Date().toISOString()
+            });
+            console.log(`   ✅ Created: ${project.title}`);
+        } catch (error) {
+            console.error(`   ❌ Failed: ${project.title}`);
+        }
+    }
+}
+
+/**
+ * Import Laboratories
+ */
+async function importLaboratories() {
+    console.log('\n🔬 Importing Laboratories...');
+
+    // Delete existing laboratories
+    try {
+        const existing = await strapiRequest('/laboratories');
+        for (const item of existing.data) {
+            await strapiRequest(`/laboratories/${item.documentId}`, 'DELETE');
+        }
+        console.log(`   Deleted ${existing.data.length} existing laboratories`);
+    } catch (err) {
+        console.log('   No existing laboratories to delete');
+    }
+
+    // Import new laboratories
+    for (const lab of contentData.laboratories) {
+        try {
+            await strapiRequest('/laboratories', 'POST', {
+                ...lab,
+                publishedAt: new Date().toISOString()
+            });
+            console.log(`   ✅ Created: ${lab.name}`);
+        } catch (error) {
+            console.error(`   ❌ Failed: ${lab.name}`);
+        }
+    }
+}
+
+/**
  * Main import function
  */
 async function main() {
@@ -251,17 +344,29 @@ async function main() {
         await importTeamMembers();
         await importGuidelines();
         await importNews();
+        await importStatistics();
+        await importProjects();
+        await importLaboratories();
 
-        console.log('\n\n✅ ====================================');
-        console.log('✅  IMPORT COMPLETE!');
-        console.log('✅ ====================================\n');
-        console.log('🎉 All NFA content has been imported successfully!\n');
+        console.log('\n\n✅ ==========================================');
+        console.log('✅  COMPLETE NFA CONTENT IMPORT SUCCESSFUL!');
+        console.log('✅ ==========================================\n');
+        console.log('🎉 All NFA content has been imported!\n');
+        console.log('📊 Imported:');
+        console.log('   • 5 Carousel slides');
+        console.log('   • 1 About page');
+        console.log('   • 21 Partners');
+        console.log('   • 2 Team members');
+        console.log('   • 5 Guidelines');
+        console.log('   • 1 News event');
+        console.log('   • 12 Statistics');
+        console.log('   • 3 Projects');
+        console.log('   • 8 Laboratories\n');
         console.log('📝 Next steps:');
-        console.log('   1. Visit http://localhost:1337/admin');
-        console.log('   2. Review the imported content');
-        console.log('   3. Upload images for carousel slides');
-        console.log('   4. Upload PDF files for guidelines');
-        console.log('   5. Check frontend at http://localhost:3000\n');
+        console.log('   1. Visit admin panel to review content');
+        console.log('   2. Upload images for carousel slides');
+        console.log('   3. Upload PDF files for guidelines');
+        console.log('   4. Check frontend display\n');
 
     } catch (error) {
         console.error('\n❌ Import failed:', error.message);

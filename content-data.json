@@ -106,17 +106,59 @@
     }
   ],
   "statistics": [
-    {"label": "Fortification Programme Started", "value": "2002"},
-    {"label": "NFA Established", "value": "2004"},
-    {"label": "National Fortification Compliance", "value": "57%"},
-    {"label": "Salt Iodization Compliance", "value": "67%"},
-    {"label": "Vegetable Oil Vitamin A Compliance", "value": "58%"},
-    {"label": "Flour Vitamin A Compliance", "value": "48%"},
-    {"label": "Child Stunting Prevalence", "value": "37%"},
-    {"label": "Vitamin A Deficiency in Children", "value": "30%"},
-    {"label": "Anaemia in Women of Reproductive Age", "value": "60-70%"},
-    {"label": "Calcium Inadequacy (Non-pregnant Women)", "value": "95%"},
-    {"label": "Calcium Inadequacy (Pregnant Women)", "value": "92%"},
-    {"label": "Calcium Inadequacy (Children)", "value": "92%"}
+    {"label": "Fortification Programme Started", "value": "2002", "category": "Programme", "order": 1, "is_featured": true},
+    {"label": "NFA Established", "value": "2004", "category": "Programme", "order": 2, "is_featured": true},
+    {"label": "National Fortification Compliance", "value": "57%", "category": "Compliance", "order": 3, "is_featured": true},
+    {"label": "Salt Iodization Compliance", "value": "67%", "category": "Compliance", "order": 4, "is_featured": true},
+    {"label": "Vegetable Oil Vitamin A Compliance", "value": "58%", "category": "Compliance", "order": 5},
+    {"label": "Flour Vitamin A Compliance", "value": "48%", "category": "Compliance", "order": 6},
+    {"label": "Child Stunting Prevalence", "value": "37%", "category": "Health Impact", "order": 7, "is_featured": true},
+    {"label": "Vitamin A Deficiency in Children", "value": "30%", "category": "Health Impact", "order": 8},
+    {"label": "Anaemia in Women of Reproductive Age", "value": "60-70%", "category": "Health Impact", "order": 9},
+    {"label": "Calcium Inadequacy (Non-pregnant Women)", "value": "95%", "category": "Health Impact", "order": 10},
+    {"label": "Calcium Inadequacy (Pregnant Women)", "value": "92%", "category": "Health Impact", "order": 11},
+    {"label": "Calcium Inadequacy (Children)", "value": "92%", "category": "Health Impact", "order": 12}
+  ],
+  "projects": [
+    {
+      "title": "Rice Fortification Programme",
+      "slug": "rice-fortification-programme",
+      "description": "<p>The NFA supports the scale-up of fortified rice production and accessibility through collaboration with rice millers, regulators, development partners, and policymakers.</p><p>The programme aims to improve access to fortified rice, strengthen regulatory systems, support awareness creation, facilitate approval of Fortified Rice Kernel standards, and support market introduction of fortified rice products.</p>",
+      "objectives": "<ul><li>Improve access to fortified rice</li><li>Strengthen regulatory systems</li><li>Support awareness creation</li><li>Facilitate approval of Fortified Rice Kernel standards</li><li>Support market introduction of fortified rice products</li></ul>",
+      "category": "Fortification",
+      "status": "Active",
+      "is_featured": true,
+      "order": 1
+    },
+    {
+      "title": "Bouillon Fortification Initiative",
+      "slug": "bouillon-fortification-initiative",
+      "description": "<p>The Alliance is currently assessing bouillon cubes as a potential vehicle for food fortification in Nigeria.</p><p>Research activities include formative studies, sodium and iodine assessments, nutrient profiling, consumer behavior analysis, and development of standards and codes of practice.</p><p>The initiative aligns with national sodium reduction strategies and aims to balance nutrition benefits with public health considerations.</p>",
+      "objectives": "<ul><li>Conduct formative studies on bouillon fortification</li><li>Assess sodium and iodine levels</li><li>Perform nutrient profiling</li><li>Analyze consumer behavior</li><li>Develop standards and codes of practice</li></ul>",
+      "category": "Research",
+      "status": "Active",
+      "is_featured": true,
+      "order": 2
+    },
+    {
+      "title": "Digital Fortification Quality & Traceability Plus (DFQT+)",
+      "slug": "digital-fortification-quality-traceability-plus",
+      "description": "<p>DFQT+ supports real-time digital monitoring and traceability of fortification activities.</p><p>The initiative supports digital compliance systems, industry reporting, traceability, regulatory monitoring, and governance strengthening.</p>",
+      "objectives": "<ul><li>Implement digital compliance systems</li><li>Enable real-time industry reporting</li><li>Enhance traceability across the value chain</li><li>Strengthen regulatory monitoring</li><li>Improve governance systems</li></ul>",
+      "category": "Technology",
+      "status": "Active",
+      "is_featured": true,
+      "order": 3
+    }
+  ],
+  "laboratories": [
+    {"name": "Saag Chemicals", "location": "Lagos", "contact": "08025589200", "is_active": true, "order": 1},
+    {"name": "Remaben Scientific Services Ltd", "location": "Ikeja", "contact": "08023037743", "is_active": true, "order": 2},
+    {"name": "Bato Chemical Labs Ltd", "location": "Ogun State", "contact": "08091972222", "is_active": true, "order": 3},
+    {"name": "Jawura Environmental Services Ltd", "location": "Lagos", "contact": "09058592802", "is_active": true, "order": 4},
+    {"name": "LS Scientific Limited", "location": "Ikeja", "contact": "08094709004", "is_active": true, "order": 5},
+    {"name": "Alfa Laboratories", "location": "Lagos", "contact": "08023093103", "is_active": true, "order": 6},
+    {"name": "Katchey Laboratory", "location": "Ikeja", "contact": "08036209410", "is_active": true, "order": 7},
+    {"name": "Bureau Veritas Nigeria Ltd", "location": "Ogun State", "contact": "08095559245", "is_active": true, "order": 8}
   ]
 }
