@@ -20,12 +20,7 @@ const config: Core.Config.Middlewares = [
   {
     name: 'strapi::cors',
     config: {
-      enabled: true,
-      headers: '*',
-      origin: ({ env }: Core.Config.Shared.ConfigParams) => {
-        const frontendUrl = env('FRONTEND_URL', 'http://localhost:3000');
-        return frontendUrl.split(',').map(url => url.trim());
-      },
+      origin: ['http://localhost:3000', 'http://localhost:1337'],
     },
   },
   'strapi::poweredBy',
