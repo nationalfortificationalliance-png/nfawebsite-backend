@@ -48,43 +48,45 @@
     "objectives": "• Providing a platform for collaboration between government and industry\n• Supporting implementation of mandatory food fortification\n• Strengthening compliance with national fortification standards\n• Supporting monitoring and evaluation systems\n• Promoting stakeholder coordination\n• Improving laboratory capacity\n• Supporting evidence-based nutrition interventions\n• Expanding fortification to additional food vehicles\n• Promoting public awareness on fortified foods\n• Supporting innovation and digital traceability systems"
   },
   "government_partners": [
-    {"name": "Federal Ministry of Health and Social Welfare", "category": "Government"},
-    {"name": "Federal Ministry of Education", "category": "Government"},
-    {"name": "Federal Ministry of Industry, Trade and Investment", "category": "Government"},
-    {"name": "Federal Ministry of Finance, Budget and National Planning", "category": "Government"},
-    {"name": "Standards Organisation of Nigeria", "category": "Government"},
-    {"name": "National Agency for Food and Drug Administration and Control", "category": "Government"},
-    {"name": "Federal Competition and Consumer Protection Commission", "category": "Government"},
-    {"name": "Nigerian Customs Service", "category": "Government"},
-    {"name": "National Primary Health Care Development Agency", "category": "Government"},
-    {"name": "Federal Ministry of Agriculture and Food Security", "category": "Government"},
-    {"name": "Federal Ministry of Information and National Orientation", "category": "Government"}
+    {"name": "Federal Ministry of Health and Social Welfare", "partner_type": "government"},
+    {"name": "Federal Ministry of Education", "partner_type": "government"},
+    {"name": "Federal Ministry of Industry, Trade and Investment", "partner_type": "government"},
+    {"name": "Federal Ministry of Finance, Budget and National Planning", "partner_type": "government"},
+    {"name": "Standards Organisation of Nigeria", "partner_type": "government"},
+    {"name": "National Agency for Food and Drug Administration and Control", "partner_type": "government"},
+    {"name": "Federal Competition and Consumer Protection Commission", "partner_type": "government"},
+    {"name": "Nigerian Customs Service", "partner_type": "government"},
+    {"name": "National Primary Health Care Development Agency", "partner_type": "government"},
+    {"name": "Federal Ministry of Agriculture and Food Security", "partner_type": "government"},
+    {"name": "Federal Ministry of Information and National Orientation", "partner_type": "government"}
   ],
   "development_partners": [
-    {"name": "Global Alliance for Improved Nutrition (GAIN)", "category": "Development Partner"},
-    {"name": "Helen Keller International (HKI)", "category": "Development Partner"},
-    {"name": "World Food Programme (WFP)", "category": "Development Partner"},
-    {"name": "UNICEF", "category": "Development Partner"},
-    {"name": "TechnoServe", "category": "Development Partner"},
-    {"name": "World Health Organization (WHO)", "category": "Development Partner"},
-    {"name": "Particle for Humanity (PFH)", "category": "Development Partner"}
+    {"name": "Global Alliance for Improved Nutrition (GAIN)", "partner_type": "un-agency"},
+    {"name": "Helen Keller International (HKI)", "partner_type": "un-agency"},
+    {"name": "World Food Programme (WFP)", "partner_type": "un-agency"},
+    {"name": "UNICEF", "partner_type": "un-agency"},
+    {"name": "TechnoServe", "partner_type": "un-agency"},
+    {"name": "World Health Organization (WHO)", "partner_type": "un-agency"},
+    {"name": "Particle for Humanity (PFH)", "partner_type": "donor"}
   ],
   "professional_bodies": [
-    {"name": "Nutrition Society of Nigeria (NSN)", "category": "Professional Body"},
-    {"name": "Nigerian Institute of Food Science and Technology (NIFST)", "category": "Professional Body"},
-    {"name": "Association of Food Beverage Tobacco Employees (AFBTE)", "category": "Professional Body"}
+    {"name": "Nutrition Society of Nigeria (NSN)", "partner_type": "civil-society"},
+    {"name": "Nigerian Institute of Food Science and Technology (NIFST)", "partner_type": "civil-society"},
+    {"name": "Association of Food Beverage Tobacco Employees (AFBTE)", "partner_type": "civil-society"}
   ],
   "team_members": [
     {
       "name": "Mr. Abubakar Tanimu Umar",
       "role": "Programme Officer",
-      "department": "NFA Secretariat",
+      "organization": "National Fortification Alliance Secretariat",
+      "category": "Secretariat",
       "bio": "Programme Officer at the National Fortification Alliance Secretariat"
     },
     {
       "name": "Mrs. Joy Haanya",
       "role": "Programme Officer",
-      "department": "NFA Secretariat",
+      "organization": "National Fortification Alliance Secretariat",
+      "category": "Secretariat",
       "bio": "Programme Officer at the National Fortification Alliance Secretariat"
     }
   ],
@@ -99,8 +101,8 @@
     {
       "title": "National Fortification Alliance 2025 Meeting",
       "excerpt": "NFA brings together stakeholders to review progress and strengthen Nigeria's food fortification programme",
-      "content": "The National Fortification Alliance held its 2025 meeting in Lagos bringing together stakeholders across government, industry, development partners, and academia to review progress and strengthen Nigeria's food fortification programme.\n\nKey discussions focused on:\n\n- national compliance performance\n- premix quality\n- laboratory strengthening\n- imported product monitoring\n- digital compliance systems\n- rice fortification\n- bouillon fortification\n- and sustainability strategies\n\nThe meeting reaffirmed the commitment of stakeholders to improving nutrition outcomes through strengthened collaboration and regulatory coordination.",
-      "featured": true
+      "body": "The National Fortification Alliance held its 2025 meeting in Lagos bringing together stakeholders across government, industry, development partners, and academia to review progress and strengthen Nigeria's food fortification programme.\n\nKey discussions focused on:\n\n- national compliance performance\n- premix quality\n- laboratory strengthening\n- imported product monitoring\n- digital compliance systems\n- rice fortification\n- bouillon fortification\n- and sustainability strategies\n\nThe meeting reaffirmed the commitment of stakeholders to improving nutrition outcomes through strengthened collaboration and regulatory coordination.",
+      "is_featured": true
     }
   ],
   "statistics": [
