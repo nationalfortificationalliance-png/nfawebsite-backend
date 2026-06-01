@@ -1,0 +1,120 @@
+{
+  "carousel_slides": [
+    {
+      "title": "Combating Hidden Hunger in Nigeria Through Food Fortification",
+      "subtitle": "The National Fortification Alliance (NFA) is driving coordinated national efforts to improve nutrition outcomes through the production, regulation, monitoring, and promotion of adequately fortified foods across Nigeria.",
+      "link_text": "Learn More",
+      "link_url": "/about",
+      "order": 1,
+      "is_active": true
+    },
+    {
+      "title": "Strengthening National Food Systems for Better Nutrition",
+      "subtitle": "The NFA works with government agencies, industries, development partners, academia, and civil society to improve compliance, quality assurance, and accessibility of fortified foods nationwide.",
+      "link_text": "Our Work",
+      "link_url": "/projects",
+      "order": 2,
+      "is_active": true
+    },
+    {
+      "title": "Partnerships Driving Sustainable Nutrition Impact",
+      "subtitle": "Through strategic collaboration, innovation, and evidence-based interventions, the NFA supports Nigeria's efforts to reduce micronutrient deficiencies and improve public health outcomes.",
+      "link_text": "Partners",
+      "link_url": "/partners",
+      "order": 3,
+      "is_active": true
+    },
+    {
+      "title": "Advancing Regulatory Compliance and Food Quality",
+      "subtitle": "The Alliance supports coordinated monitoring, standards enforcement, laboratory strengthening, and digital compliance systems for fortified foods in Nigeria.",
+      "link_text": "Regulatory Framework",
+      "link_url": "/guidelines",
+      "order": 4,
+      "is_active": true
+    },
+    {
+      "title": "Innovation and Research for Nutrition Improvement",
+      "subtitle": "The NFA supports emerging initiatives including bouillon fortification, rice fortification, digital traceability systems, laboratory strengthening, and micronutrient innovation projects.",
+      "link_text": "Projects & Initiatives",
+      "link_url": "/projects",
+      "order": 5,
+      "is_active": true
+    }
+  ],
+  "about_page": {
+    "mission": "To coordinate and strengthen national efforts in food fortification through multi-sectoral collaboration, regulatory support, stakeholder engagement, quality assurance systems, and evidence-based interventions aimed at reducing micronutrient deficiencies in Nigeria.",
+    "vision": "A Nigeria free from preventable micronutrient deficiencies through sustainable access to safe, quality, and adequately fortified foods.",
+    "background": "The National Fortification Alliance (NFA) is a multi-sectoral coordination platform established to strengthen the implementation of food fortification programmes in Nigeria through collaboration among government agencies, regulatory institutions, private sector stakeholders, development partners, academia, professional associations, civil society organizations, and the media.\n\nMandatory food fortification of selected staple food vehicles including wheat flour, maize flour, sugar, and vegetable oil commenced in Nigeria in 2002 as one of the national strategies for combating micronutrient deficiencies and improving public health outcomes.\n\nIn 2004, the National Fortification Alliance was formally established under the chairmanship of the then National Planning Commission (currently the Federal Ministry of Finance, Budget and National Planning) to mobilize stakeholders for coordinated implementation of the national fortification programme.\n\nThe Alliance provides a platform for policy dialogue, technical coordination, compliance monitoring, stakeholder engagement, advocacy, laboratory strengthening, public awareness creation, and nutrition programme implementation.",
+    "objectives": "• Providing a platform for collaboration between government and industry\n• Supporting implementation of mandatory food fortification\n• Strengthening compliance with national fortification standards\n• Supporting monitoring and evaluation systems\n• Promoting stakeholder coordination\n• Improving laboratory capacity\n• Supporting evidence-based nutrition interventions\n• Expanding fortification to additional food vehicles\n• Promoting public awareness on fortified foods\n• Supporting innovation and digital traceability systems"
+  },
+  "government_partners": [
+    {"name": "Federal Ministry of Health and Social Welfare", "category": "Government"},
+    {"name": "Federal Ministry of Education", "category": "Government"},
+    {"name": "Federal Ministry of Industry, Trade and Investment", "category": "Government"},
+    {"name": "Federal Ministry of Finance, Budget and National Planning", "category": "Government"},
+    {"name": "Standards Organisation of Nigeria", "category": "Government"},
+    {"name": "National Agency for Food and Drug Administration and Control", "category": "Government"},
+    {"name": "Federal Competition and Consumer Protection Commission", "category": "Government"},
+    {"name": "Nigerian Customs Service", "category": "Government"},
+    {"name": "National Primary Health Care Development Agency", "category": "Government"},
+    {"name": "Federal Ministry of Agriculture and Food Security", "category": "Government"},
+    {"name": "Federal Ministry of Information and National Orientation", "category": "Government"}
+  ],
+  "development_partners": [
+    {"name": "Global Alliance for Improved Nutrition (GAIN)", "category": "Development Partner"},
+    {"name": "Helen Keller International (HKI)", "category": "Development Partner"},
+    {"name": "World Food Programme (WFP)", "category": "Development Partner"},
+    {"name": "UNICEF", "category": "Development Partner"},
+    {"name": "TechnoServe", "category": "Development Partner"},
+    {"name": "World Health Organization (WHO)", "category": "Development Partner"},
+    {"name": "Particle for Humanity (PFH)", "category": "Development Partner"}
+  ],
+  "professional_bodies": [
+    {"name": "Nutrition Society of Nigeria (NSN)", "category": "Professional Body"},
+    {"name": "Nigerian Institute of Food Science and Technology (NIFST)", "category": "Professional Body"},
+    {"name": "Association of Food Beverage Tobacco Employees (AFBTE)", "category": "Professional Body"}
+  ],
+  "team_members": [
+    {
+      "name": "Mr. Abubakar Tanimu Umar",
+      "role": "Programme Officer",
+      "department": "NFA Secretariat",
+      "bio": "Programme Officer at the National Fortification Alliance Secretariat"
+    },
+    {
+      "name": "Mrs. Joy Haanya",
+      "role": "Programme Officer",
+      "department": "NFA Secretariat",
+      "bio": "Programme Officer at the National Fortification Alliance Secretariat"
+    }
+  ],
+  "guidelines": [
+    {"title": "Vegetable Oil Fortification Guidelines"},
+    {"title": "Wheat Flour Fortification Standards"},
+    {"title": "Salt Iodization Regulations"},
+    {"title": "Sugar Fortification Guidelines"},
+    {"title": "Bouillon Fortification Framework"}
+  ],
+  "news_events": [
+    {
+      "title": "National Fortification Alliance 2025 Meeting",
+      "excerpt": "NFA brings together stakeholders to review progress and strengthen Nigeria's food fortification programme",
+      "content": "The National Fortification Alliance held its 2025 meeting in Lagos bringing together stakeholders across government, industry, development partners, and academia to review progress and strengthen Nigeria's food fortification programme.\n\nKey discussions focused on:\n\n- national compliance performance\n- premix quality\n- laboratory strengthening\n- imported product monitoring\n- digital compliance systems\n- rice fortification\n- bouillon fortification\n- and sustainability strategies\n\nThe meeting reaffirmed the commitment of stakeholders to improving nutrition outcomes through strengthened collaboration and regulatory coordination.",
+      "featured": true
+    }
+  ],
+  "statistics": [
+    {"label": "Fortification Programme Started", "value": "2002"},
+    {"label": "NFA Established", "value": "2004"},
+    {"label": "National Fortification Compliance", "value": "57%"},
+    {"label": "Salt Iodization Compliance", "value": "67%"},
+    {"label": "Vegetable Oil Vitamin A Compliance", "value": "58%"},
+    {"label": "Flour Vitamin A Compliance", "value": "48%"},
+    {"label": "Child Stunting Prevalence", "value": "37%"},
+    {"label": "Vitamin A Deficiency in Children", "value": "30%"},
+    {"label": "Anaemia in Women of Reproductive Age", "value": "60-70%"},
+    {"label": "Calcium Inadequacy (Non-pregnant Women)", "value": "95%"},
+    {"label": "Calcium Inadequacy (Pregnant Women)", "value": "92%"},
+    {"label": "Calcium Inadequacy (Children)", "value": "92%"}
+  ]
+}
