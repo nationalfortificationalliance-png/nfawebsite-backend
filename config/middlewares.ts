@@ -22,7 +22,10 @@ const config: Core.Config.Middlewares = [
     config: {
       enabled: true,
       headers: '*',
-      origin: ['*'],
+      origin: ({ env }: Core.Config.Shared.ConfigParams) => {
+        const frontendUrl = env('FRONTEND_URL', 'http://localhost:3000');
+        return frontendUrl.split(',').map(url => url.trim());
+      },
     },
   },
   'strapi::poweredBy',
