@@ -461,6 +461,7 @@ export interface ApiAboutPageAboutPage extends Struct.SingleTypeSchema {
     mission: Schema.Attribute.Text & Schema.Attribute.Required;
     objectives: Schema.Attribute.Text;
     publishedAt: Schema.Attribute.DateTime;
+    seo: Schema.Attribute.Component<'shared.seo', false>;
     updatedAt: Schema.Attribute.DateTime;
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
@@ -513,6 +514,40 @@ export interface ApiCarouselCarousel extends Struct.CollectionTypeSchema {
   };
 }
 
+export interface ApiContactMessageContactMessage
+  extends Struct.CollectionTypeSchema {
+  collectionName: 'contact_messages';
+  info: {
+    description: 'User inquiries from the website';
+    displayName: 'Contact Message';
+    pluralName: 'contact-messages';
+    singularName: 'contact-message';
+  };
+  options: {
+    draftAndPublish: false;
+  };
+  attributes: {
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    email: Schema.Attribute.Email & Schema.Attribute.Required;
+    isRead: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<false>;
+    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::contact-message.contact-message'
+    > &
+      Schema.Attribute.Private;
+    message: Schema.Attribute.Text & Schema.Attribute.Required;
+    name: Schema.Attribute.String & Schema.Attribute.Required;
+    publishedAt: Schema.Attribute.DateTime;
+    subject: Schema.Attribute.String & Schema.Attribute.Required;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+  };
+}
+
 export interface ApiGlobalSettingGlobalSetting extends Struct.SingleTypeSchema {
   collectionName: 'global_settings';
   info: {
@@ -542,6 +577,7 @@ export interface ApiGlobalSettingGlobalSetting extends Struct.SingleTypeSchema {
       Schema.Attribute.Private;
     logo: Schema.Attribute.Media<'images'>;
     publishedAt: Schema.Attribute.DateTime;
+    seo: Schema.Attribute.Component<'shared.seo', false>;
     site_name: Schema.Attribute.String &
       Schema.Attribute.DefaultTo<'National Fortification Alliance'>;
     site_tagline: Schema.Attribute.String;
@@ -566,10 +602,10 @@ export interface ApiGuidelineDocumentGuidelineDocument
   };
   attributes: {
     category: Schema.Attribute.Enumeration<
-      ['regulatory', 'technical', 'operational', 'training', 'report', 'policy']
+      ['General', 'Logistics', 'Nutrition', 'Reports', 'Other']
     > &
       Schema.Attribute.Required &
-      Schema.Attribute.DefaultTo<'regulatory'>;
+      Schema.Attribute.DefaultTo<'General'>;
     createdAt: Schema.Attribute.DateTime;
     createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
@@ -634,6 +670,7 @@ export interface ApiNewsEventNewsEvent extends Struct.CollectionTypeSchema {
     > &
       Schema.Attribute.Private;
     publishedAt: Schema.Attribute.DateTime;
+    seo: Schema.Attribute.Component<'shared.seo', false>;
     slug: Schema.Attribute.UID<'title'> & Schema.Attribute.Required;
     tags: Schema.Attribute.String;
     title: Schema.Attribute.String &
@@ -696,6 +733,76 @@ export interface ApiPartnerPartner extends Struct.CollectionTypeSchema {
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
     website_url: Schema.Attribute.String;
+  };
+}
+
+export interface ApiSubscriberSubscriber extends Struct.CollectionTypeSchema {
+  collectionName: 'subscribers';
+  info: {
+    description: 'Newsletter subscribers';
+    displayName: 'Subscriber';
+    pluralName: 'subscribers';
+    singularName: 'subscriber';
+  };
+  options: {
+    draftAndPublish: false;
+  };
+  attributes: {
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    email: Schema.Attribute.Email &
+      Schema.Attribute.Required &
+      Schema.Attribute.Unique;
+    isActive: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<true>;
+    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::subscriber.subscriber'
+    > &
+      Schema.Attribute.Private;
+    publishedAt: Schema.Attribute.DateTime;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+  };
+}
+
+export interface ApiTeamMemberTeamMember extends Struct.CollectionTypeSchema {
+  collectionName: 'team_members';
+  info: {
+    description: 'NFP/WFP Leadership and Focal Points';
+    displayName: 'Team Member';
+    pluralName: 'team-members';
+    singularName: 'team-member';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  attributes: {
+    bio: Schema.Attribute.Text;
+    category: Schema.Attribute.Enumeration<
+      ['Leadership', 'Secretariat', 'Focal Point']
+    > &
+      Schema.Attribute.DefaultTo<'Leadership'>;
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    image: Schema.Attribute.Media<'images'>;
+    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::team-member.team-member'
+    > &
+      Schema.Attribute.Private;
+    name: Schema.Attribute.String & Schema.Attribute.Required;
+    order: Schema.Attribute.Integer & Schema.Attribute.DefaultTo<0>;
+    organization: Schema.Attribute.String;
+    publishedAt: Schema.Attribute.DateTime;
+    role: Schema.Attribute.String & Schema.Attribute.Required;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
   };
 }
 
@@ -1212,10 +1319,13 @@ declare module '@strapi/strapi' {
       'admin::user': AdminUser;
       'api::about-page.about-page': ApiAboutPageAboutPage;
       'api::carousel.carousel': ApiCarouselCarousel;
+      'api::contact-message.contact-message': ApiContactMessageContactMessage;
       'api::global-setting.global-setting': ApiGlobalSettingGlobalSetting;
       'api::guideline-document.guideline-document': ApiGuidelineDocumentGuidelineDocument;
       'api::news-event.news-event': ApiNewsEventNewsEvent;
       'api::partner.partner': ApiPartnerPartner;
+      'api::subscriber.subscriber': ApiSubscriberSubscriber;
+      'api::team-member.team-member': ApiTeamMemberTeamMember;
       'plugin::content-releases.release': PluginContentReleasesRelease;
       'plugin::content-releases.release-action': PluginContentReleasesReleaseAction;
       'plugin::i18n.locale': PluginI18NLocale;

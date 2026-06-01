@@ -35,6 +35,18 @@
     "order": {
       "type": "integer",
       "default": 0
+    },
+    "organization": {
+      "type": "string"
+    },
+    "category": {
+      "type": "enumeration",
+      "enum": [
+        "Leadership",
+        "Secretariat",
+        "Focal Point"
+      ],
+      "default": "Leadership"
     }
   }
 }
