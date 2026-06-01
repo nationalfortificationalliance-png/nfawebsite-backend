@@ -172,7 +172,7 @@ async function seedSampleData(strapi: Core.Strapi) {
             {
                 title: 'Nigeria Food Fortification Standards (2024 Edition)',
                 description: 'Comprehensive standards document covering mandatory fortification levels for wheat flour, maize flour, sugar, vegetable oil, and salt.',
-                category: 'regulatory',
+                category: 'General',
                 published_date: '2024-01-15',
                 is_featured: true,
                 publishedAt: new Date(),
@@ -180,7 +180,7 @@ async function seedSampleData(strapi: Core.Strapi) {
             {
                 title: 'NAFDAC Certification Guide for Food Fortification',
                 description: 'Step-by-step guide for food processors to obtain and maintain NAFDAC certification for producing fortified foods.',
-                category: 'regulatory',
+                category: 'General',
                 published_date: '2024-03-20',
                 is_featured: true,
                 publishedAt: new Date(),
@@ -188,7 +188,7 @@ async function seedSampleData(strapi: Core.Strapi) {
             {
                 title: 'Premix Procurement and Quality Control Manual',
                 description: 'Technical guidance on sourcing, testing, and applying vitamin and mineral premixes in food production.',
-                category: 'technical',
+                category: 'General',
                 published_date: '2024-02-10',
                 is_featured: false,
                 publishedAt: new Date(),
@@ -196,7 +196,7 @@ async function seedSampleData(strapi: Core.Strapi) {
             {
                 title: 'Small-Scale Miller Fortification Starter Guide',
                 description: 'Practical, simplified guide for small and medium-scale millers beginning the fortification journey.',
-                category: 'operational',
+                category: 'General',
                 published_date: '2024-04-05',
                 is_featured: false,
                 publishedAt: new Date(),
