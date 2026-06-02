@@ -1,51 +1,55 @@
 {
-  "kind": "collectionType",
-  "collectionName": "laboratories",
-  "info": {
-    "singularName": "laboratory",
-    "pluralName": "laboratories",
-    "displayName": "Laboratory",
-    "description": "Approved micronutrient testing laboratories"
-  },
-  "options": {
-    "draftAndPublish": true
-  },
-  "pluginOptions": {},
-  "attributes": {
-    "name": {
-      "type": "string",
-      "required": true,
-      "maxLength": 200
+    "kind": "collectionType",
+    "collectionName": "laboratories",
+    "info": {
+        "singularName": "laboratory",
+        "pluralName": "laboratories",
+        "displayName": "Laboratory",
+        "description": "Approved micronutrient testing laboratories"
     },
-    "location": {
-      "type": "string",
-      "required": true,
-      "maxLength": 100
+    "options": {
+        "draftAndPublish": true
     },
-    "contact": {
-      "type": "string",
-      "required": true,
-      "maxLength": 50
+    "pluginOptions": {
+        "i18n": {
+            "localized": true
+        }
     },
-    "email": {
-      "type": "email"
-    },
-    "address": {
-      "type": "text"
-    },
-    "services": {
-      "type": "richtext"
-    },
-    "accreditation": {
-      "type": "string"
-    },
-    "is_active": {
-      "type": "boolean",
-      "default": true
-    },
-    "order": {
-      "type": "integer",
-      "default": 0
+    "attributes": {
+        "name": {
+            "type": "string",
+            "required": true,
+            "maxLength": 200
+        },
+        "location": {
+            "type": "string",
+            "required": true,
+            "maxLength": 100
+        },
+        "contact": {
+            "type": "string",
+            "required": true,
+            "maxLength": 50
+        },
+        "email": {
+            "type": "email"
+        },
+        "address": {
+            "type": "text"
+        },
+        "services": {
+            "type": "richtext"
+        },
+        "accreditation": {
+            "type": "string"
+        },
+        "is_active": {
+            "type": "boolean",
+            "default": true
+        },
+        "order": {
+            "type": "integer",
+            "default": 0
+        }
     }
-  }
 }

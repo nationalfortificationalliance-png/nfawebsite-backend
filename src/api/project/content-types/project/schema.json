@@ -1,69 +1,75 @@
 {
-  "kind": "collectionType",
-  "collectionName": "projects",
-  "info": {
-    "singularName": "project",
-    "pluralName": "projects",
-    "displayName": "Project & Initiative",
-    "description": "NFA projects and strategic initiatives"
-  },
-  "options": {
-    "draftAndPublish": true
-  },
-  "pluginOptions": {},
-  "attributes": {
-    "title": {
-      "type": "string",
-      "required": true,
-      "maxLength": 200
+    "kind": "collectionType",
+    "collectionName": "projects",
+    "info": {
+        "singularName": "project",
+        "pluralName": "projects",
+        "displayName": "Project & Initiative",
+        "description": "NFA projects and strategic initiatives"
     },
-    "slug": {
-      "type": "uid",
-      "targetField": "title"
+    "options": {
+        "draftAndPublish": true
     },
-    "description": {
-      "type": "richtext",
-      "required": true
+    "pluginOptions": {
+        "i18n": {
+            "localized": true
+        }
     },
-    "objectives": {
-      "type": "richtext"
-    },
-    "image": {
-      "type": "media",
-      "multiple": false,
-      "required": false,
-      "allowedTypes": ["images"]
-    },
-    "category": {
-      "type": "enumeration",
-      "enum": [
-        "Fortification",
-        "Research",
-        "Technology",
-        "Capacity Building",
-        "Monitoring"
-      ],
-      "default": "Fortification"
-    },
-    "status": {
-      "type": "enumeration",
-      "enum": [
-        "Active",
-        "Completed",
-        "Planned"
-      ],
-      "default": "Active"
-    },
-    "start_date": {
-      "type": "date"
-    },
-    "is_featured": {
-      "type": "boolean",
-      "default": false
-    },
-    "order": {
-      "type": "integer",
-      "default": 0
+    "attributes": {
+        "title": {
+            "type": "string",
+            "required": true,
+            "maxLength": 200
+        },
+        "slug": {
+            "type": "uid",
+            "targetField": "title"
+        },
+        "description": {
+            "type": "richtext",
+            "required": true
+        },
+        "objectives": {
+            "type": "richtext"
+        },
+        "image": {
+            "type": "media",
+            "multiple": false,
+            "required": false,
+            "allowedTypes": [
+                "images"
+            ]
+        },
+        "category": {
+            "type": "enumeration",
+            "enum": [
+                "Fortification",
+                "Research",
+                "Technology",
+                "Capacity Building",
+                "Monitoring"
+            ],
+            "default": "Fortification"
+        },
+        "status": {
+            "type": "enumeration",
+            "enum": [
+                "Active",
+                "Completed",
+                "Planned"
+            ],
+            "default": "Active"
+        },
+        "start_date": {
+            "type": "date"
+        },
+        "is_featured": {
+            "type": "boolean",
+            "default": false
+        },
+        "order": {
+            "type": "integer",
+            "default": 0
+        }
     }
-  }
 }

@@ -1,25 +1,29 @@
 {
-  "kind": "collectionType",
-  "collectionName": "subscribers",
-  "info": {
-    "singularName": "subscriber",
-    "pluralName": "subscribers",
-    "displayName": "Subscriber",
-    "description": "Newsletter subscribers"
-  },
-  "options": {
-    "draftAndPublish": false
-  },
-  "pluginOptions": {},
-  "attributes": {
-    "email": {
-      "type": "email",
-      "required": true,
-      "unique": true
+    "kind": "collectionType",
+    "collectionName": "subscribers",
+    "info": {
+        "singularName": "subscriber",
+        "pluralName": "subscribers",
+        "displayName": "Subscriber",
+        "description": "Newsletter subscribers"
     },
-    "isActive": {
-      "type": "boolean",
-      "default": true
+    "options": {
+        "draftAndPublish": false
+    },
+    "pluginOptions": {
+        "i18n": {
+            "localized": true
+        }
+    },
+    "attributes": {
+        "email": {
+            "type": "email",
+            "required": true,
+            "unique": true
+        },
+        "isActive": {
+            "type": "boolean",
+            "default": true
+        }
     }
-  }
 }

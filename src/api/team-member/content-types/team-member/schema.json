@@ -1,52 +1,56 @@
 {
-  "kind": "collectionType",
-  "collectionName": "team_members",
-  "info": {
-    "singularName": "team-member",
-    "pluralName": "team-members",
-    "displayName": "Team Member",
-    "description": "NFP/WFP Leadership and Focal Points"
-  },
-  "options": {
-    "draftAndPublish": true
-  },
-  "pluginOptions": {},
-  "attributes": {
-    "name": {
-      "type": "string",
-      "required": true
+    "kind": "collectionType",
+    "collectionName": "team_members",
+    "info": {
+        "singularName": "team-member",
+        "pluralName": "team-members",
+        "displayName": "Team Member",
+        "description": "NFP/WFP Leadership and Focal Points"
     },
-    "role": {
-      "type": "string",
-      "required": true
+    "options": {
+        "draftAndPublish": true
     },
-    "bio": {
-      "type": "text",
-      "required": false
+    "pluginOptions": {
+        "i18n": {
+            "localized": true
+        }
     },
-    "image": {
-      "type": "media",
-      "multiple": false,
-      "required": false,
-      "allowedTypes": [
-        "images"
-      ]
-    },
-    "order": {
-      "type": "integer",
-      "default": 0
-    },
-    "organization": {
-      "type": "string"
-    },
-    "category": {
-      "type": "enumeration",
-      "enum": [
-        "Leadership",
-        "Secretariat",
-        "Focal Point"
-      ],
-      "default": "Leadership"
+    "attributes": {
+        "name": {
+            "type": "string",
+            "required": true
+        },
+        "role": {
+            "type": "string",
+            "required": true
+        },
+        "bio": {
+            "type": "text",
+            "required": false
+        },
+        "image": {
+            "type": "media",
+            "multiple": false,
+            "required": false,
+            "allowedTypes": [
+                "images"
+            ]
+        },
+        "order": {
+            "type": "integer",
+            "default": 0
+        },
+        "organization": {
+            "type": "string"
+        },
+        "category": {
+            "type": "enumeration",
+            "enum": [
+                "Leadership",
+                "Secretariat",
+                "Focal Point"
+            ],
+            "default": "Leadership"
+        }
     }
-  }
 }
