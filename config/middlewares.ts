@@ -20,7 +20,11 @@ const config: Core.Config.Middlewares = [
   {
     name: 'strapi::cors',
     config: {
-      origin: ['http://localhost:3000', 'http://localhost:1337'],
+      origin: [
+        'http://localhost:3000',
+        'http://localhost:1337',
+        'https://*.vercel.app', // Allow all Vercel preview and production URLs
+      ],
     },
   },
   'strapi::poweredBy',
