@@ -1,0 +1,62 @@
+{
+  "carousel_slides": {
+    "en": [
+      {
+        "title": "Combating Hidden Hunger in Nigeria Through Food Fortification",
+        "subtitle": "The National Fortification Alliance (NFA) is driving coordinated national efforts to improve nutrition outcomes through the production, regulation, monitoring, and promotion of adequately fortified foods across Nigeria.",
+        "link_text": "Learn More",
+        "link_url": "/about",
+        "order": 1,
+        "is_active": true
+      }
+    ],
+    "ha": [
+      {
+        "title": "Yaƙi da Yunwa a Najeriya ta Hanyar Ƙara Gina Abinci",
+        "subtitle": "Ƙungiyar Ƙarfafa Abinci ta Ƙasa (NFA) tana jagorantar ƙoƙarin haɗin gwiwar ƙasa don inganta sakamakon abinci mai gina jiki ta hanyar samarwa, tsari, sa ido, da haɓaka abinci masu inganci a duk faɗin Najeriya.",
+        "link_text": "Koyi Ƙari",
+        "link_url": "/about",
+        "order": 1,
+        "is_active": true
+      }
+    ],
+    "ig": [
+      {
+        "title": "Ịlụso Agụụ Nzuzo na Naịjirịa Site n'Ike Nri",
+        "subtitle": "National Fortification Alliance (NFA) na-eduzi mbọ mba niile iji melite nsonaazụ nri site na mmepụta, iwu, nlekọta, na nkwalite nri ndị nwere ike zuru oke na Naịjirịa niile.",
+        "link_text": "Mụtakwuo",
+        "link_url": "/about",
+        "order": 1,
+        "is_active": true
+      }
+    ],
+    "yo": [
+      {
+        "title": "Ìjàkọjá Ebi Pamọ́ ni Nàìjíríà Nípa Ìmúdára Oúnjẹ",
+        "subtitle": "Àjọ Ìmúdára Oúnjẹ Orílẹ̀-èdè (NFA) ń darí àwọn ìgbìyànjú orílẹ̀-èdè tí a ṣètò láti mu ìbámu oúnjẹ pọ̀ sí i nípa ìṣelọpọ, ìlànà, àbójútó, àti ìgbélarugẹ oúnjẹ tí ó ní ìdánilójú tó peye ní gbogbo Nàìjíríà.",
+        "link_text": "Kọ́ Síi",
+        "link_url": "/about",
+        "order": 1,
+        "is_active": true
+      }
+    ]
+  },
+  "about_page": {
+    "en": {
+      "mission": "To coordinate and strengthen national efforts in food fortification through multi-sectoral collaboration, regulatory support, stakeholder engagement, quality assurance systems, and evidence-based interventions aimed at reducing micronutrient deficiencies in Nigeria.",
+      "vision": "A Nigeria free from preventable micronutrient deficiencies through sustainable access to safe, quality, and adequately fortified foods."
+    },
+    "ha": {
+      "mission": "Don daidaita da ƙarfafa ƙoƙarin ƙasa wajen ƙara gina abinci ta hanyar haɗin gwiwar fannoni daban-daban, tallafin tsari, haɗin gwiwa da masu ruwa da tsaki, tsarin tabbatar da inganci, da matakan da suka dogara da shaida don rage ƙarancin sinadarai masu mahimmanci a Najeriya.",
+      "vision": "Najeriya mai 'yanci daga ƙarancin sinadarai masu mahimmanci da za a iya kaucewa ta hanyar samun dama ga abinci mai aminci, inganci, kuma wanda aka ƙara gina shi sosai."
+    },
+    "ig": {
+      "mission": "Ịhazi ma mee ka ọ sie ike mbọ mba niile n'ike nri site na mmekorita ngalaba dị iche iche, nkwado iwu, itinye aka nke ndị metụtara, usoro ijide mma, na ntinye aka dabere na ihe akaebe iji belata ụkọ micronutrient na Naịjirịa.",
+      "vision": "Naịjirịa nwere onwe ya na ụkọ micronutrient a na-egbochi site na nnweta na-adigide nke nri ndị dị mma, dị mma, ma nwee ike zuru oke."
+    },
+    "yo": {
+      "mission": "Láti ṣètò àti mu àwọn ìgbìyànjú orílẹ̀-èdè lọ́wọ́ nínú ìmúdára oúnjẹ nípa ìfọwọ́sowọ́pọ̀ ẹ̀ka-ọ̀pọ̀, àtìlẹ́yìn ìlànà, ìfaramọ́ àwọn olùdásílẹ̀, àwọn ètò ìdánilójú ìdára, àti àwọn ìtẹ̀síwájú tí ó da lórí ẹ̀rí tí ó ń retí ìdínkù àìtó micronutrient ní Nàìjíríà.",
+      "vision": "Nàìjíríà tí kò ní àìtó micronutrient tí a lè dènà nípa àǹfààní àìduro sí oúnjẹ tí ó ṣe déédé, ní ìdára, tí ó sì ní ìmúdára tó peye."
+    }
+  }
+}
