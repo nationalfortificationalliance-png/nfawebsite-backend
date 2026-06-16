@@ -52,7 +52,8 @@
                 "un-agency",
                 "civil-society",
                 "private-sector",
-                "donor"
+                "donor",
+                "professional-body"
             ],
             "default": "un-agency"
         }
