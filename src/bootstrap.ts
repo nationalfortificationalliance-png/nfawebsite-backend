@@ -29,7 +29,7 @@ const bootstrap = async ({ strapi }: { strapi: Core.Strapi }) => {
 
     for (const contentType of contentTypes) {
         for (const action of readActions) {
-            const permissionExists = await strapi
+            const permission = await strapi
                 .query('plugin::users-permissions.permission')
                 .findOne({
                     where: {
@@ -38,12 +38,20 @@ const bootstrap = async ({ strapi }: { strapi: Core.Strapi }) => {
                     },
                 });
 
-            if (!permissionExists) {
+            if (!permission) {
+                // Create permission if it doesn't exist
                 await strapi.query('plugin::users-permissions.permission').create({
                     data: {
                         action: `${contentType}.${action}`,
                         role: publicRole.id,
+                        enabled: true,
                     },
+                });
+            } else if (!permission.enabled) {
+                // Enable permission if it exists but is disabled
+                await strapi.query('plugin::users-permissions.permission').update({
+                    where: { id: permission.id },
+                    data: { enabled: true },
                 });
             }
         }
