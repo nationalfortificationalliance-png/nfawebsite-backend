@@ -1,9 +1,6 @@
-'use strict';
-
 /**
  * quote router
  */
 
-const { createCoreRouter } = require('@strapi/strapi').factories;
-
-module.exports = createCoreRouter('api::quote.quote');
+import { factories } from '@strapi/strapi';
+export default factories.createCoreRouter('api::quote.quote');

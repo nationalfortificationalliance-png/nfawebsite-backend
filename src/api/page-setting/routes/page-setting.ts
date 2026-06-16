@@ -1,9 +1,6 @@
-'use strict';
-
 /**
  * page-setting router
  */
 
-const { createCoreRouter } = require('@strapi/strapi').factories;
-
-module.exports = createCoreRouter('api::page-setting.page-setting');
+import { factories } from '@strapi/strapi';
+export default factories.createCoreRouter('api::page-setting.page-setting');

@@ -1,9 +1,6 @@
-'use strict';
-
 /**
  * quote service
  */
 
-const { createCoreService } = require('@strapi/strapi').factories;
-
-module.exports = createCoreService('api::quote.quote');
+import { factories } from '@strapi/strapi';
+export default factories.createCoreService('api::quote.quote');
