@@ -6,9 +6,10 @@ export default factories.createCoreController('api::news-event.news-event', ({ s
     const today = new Date().toISOString().split('T')[0];
 
     const { query } = ctx;
-    const filters = {
-      ...query.filters,
-      category: 'event',
+    const existingFilters = (query.filters || {}) as Record<string, any>;
+    const filters: any = {
+      ...existingFilters,
+      category: 'event' as const,
       date: {
         $gte: today,
       },
@@ -30,9 +31,10 @@ export default factories.createCoreController('api::news-event.news-event', ({ s
     const today = new Date().toISOString().split('T')[0];
 
     const { query } = ctx;
-    const filters = {
-      ...query.filters,
-      category: 'event',
+    const existingFilters = (query.filters || {}) as Record<string, any>;
+    const filters: any = {
+      ...existingFilters,
+      category: 'event' as const,
       date: {
         $lt: today,
       },
