@@ -15,6 +15,14 @@ const bootstrap = async ({ strapi }: { strapi: Core.Strapi }) => {
         'api::partner.partner',
         'api::about-page.about-page',
         'api::global-setting.global-setting',
+        'api::quote.quote',
+        'api::statistic.statistic',
+        'api::team-member.team-member',
+        'api::project.project',
+        'api::laboratory.laboratory',
+        'api::page-setting.page-setting',
+        'api::subscriber.subscriber',
+        'api::contact-message.contact-message',
     ];
 
     const readActions = ['find', 'findOne'];
