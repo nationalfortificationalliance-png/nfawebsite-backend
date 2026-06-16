@@ -1,6 +1,6 @@
 import { factories } from '@strapi/strapi';
 
-export default factories.createCoreController('api::news-event.news-event', ({ strapi }) => ({
+export default factories.createCoreController('api::news-event.news-event', (context) => ({
   // Get upcoming events (events with date >= today)
   async findUpcoming(ctx) {
     const today = new Date().toISOString().split('T')[0];
@@ -15,15 +15,14 @@ export default factories.createCoreController('api::news-event.news-event', ({ s
       },
     };
 
-    const entities = await strapi.entityService.findMany('api::news-event.news-event', {
+    const entities = await context.strapi.entityService.findMany('api::news-event.news-event', {
       ...query,
       filters,
       sort: { date: 'asc' }, // Upcoming events sorted by soonest first
       populate: query.populate || ['image', 'gallery'],
     });
 
-    const sanitized = await this.sanitizeOutput(entities, ctx);
-    return this.transformResponse(sanitized);
+    return { data: entities, meta: {} };
   },
 
   // Get past events (events with date < today)
@@ -40,14 +39,13 @@ export default factories.createCoreController('api::news-event.news-event', ({ s
       },
     };
 
-    const entities = await strapi.entityService.findMany('api::news-event.news-event', {
+    const entities = await context.strapi.entityService.findMany('api::news-event.news-event', {
       ...query,
       filters,
       sort: { date: 'desc' }, // Past events sorted by most recent first
       populate: query.populate || ['image', 'gallery'],
     });
 
-    const sanitized = await this.sanitizeOutput(entities, ctx);
-    return this.transformResponse(sanitized);
+    return { data: entities, meta: {} };
   },
 }));
