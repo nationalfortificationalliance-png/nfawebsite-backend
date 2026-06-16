@@ -47,15 +47,13 @@
         "partner_type": {
             "type": "enumeration",
             "enum": [
-                "lead",
                 "government",
-                "un-agency",
-                "civil-society",
                 "private-sector",
-                "donor",
-                "professional-body"
+                "professional-body",
+                "development-partner",
+                "civil-society"
             ],
-            "default": "un-agency"
+            "default": "government"
         }
     }
 }
