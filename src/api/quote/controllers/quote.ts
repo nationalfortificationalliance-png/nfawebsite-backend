@@ -3,4 +3,4 @@
  */
 
 import { factories } from '@strapi/strapi';
-export default factories.createCoreController('api::quote.quote');
+export default factories.createCoreController('api::quote.quote' as any);

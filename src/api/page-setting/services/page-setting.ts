@@ -3,4 +3,4 @@
  */
 
 import { factories } from '@strapi/strapi';
-export default factories.createCoreService('api::page-setting.page-setting');
+export default factories.createCoreService('api::page-setting.page-setting' as any);
