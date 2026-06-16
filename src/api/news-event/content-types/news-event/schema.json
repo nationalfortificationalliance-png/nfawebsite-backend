@@ -46,6 +46,14 @@
                 "images"
             ]
         },
+        "gallery": {
+            "type": "media",
+            "multiple": true,
+            "required": false,
+            "allowedTypes": [
+                "images"
+            ]
+        },
         "category": {
             "type": "enumeration",
             "enum": [
