@@ -8,13 +8,12 @@ const bootstrap = async ({ strapi }: { strapi: Core.Strapi }) => {
 
     if (!publicRole) return;
 
-    const contentTypes = [
+    // Collection types (support find and findOne)
+    const collectionTypes = [
         'api::carousel.carousel',
         'api::news-event.news-event',
         'api::guideline-document.guideline-document',
         'api::partner.partner',
-        'api::about-page.about-page',
-        'api::global-setting.global-setting',
         'api::quote.quote',
         'api::statistic.statistic',
         'api::team-member.team-member',
@@ -23,38 +22,54 @@ const bootstrap = async ({ strapi }: { strapi: Core.Strapi }) => {
         'api::page-setting.page-setting',
         'api::subscriber.subscriber',
         'api::contact-message.contact-message',
+        'api::contact-page.contact-page',
+        'api::laboratory.laboratory',
     ];
 
-    const readActions = ['find', 'findOne'];
+    // Single types (only support find, not findOne)
+    const singleTypes = [
+        'api::about-page.about-page',
+        'api::global-setting.global-setting',
+    ];
 
-    for (const contentType of contentTypes) {
-        for (const action of readActions) {
-            const permission = await strapi
-                .query('plugin::users-permissions.permission')
-                .findOne({
-                    where: {
-                        role: publicRole.id,
-                        action: `${contentType}.${action}`,
-                    },
-                });
+    // Helper function to create/enable permission
+    const ensurePermission = async (contentType: string, action: string) => {
+        const permission = await strapi
+            .query('plugin::users-permissions.permission')
+            .findOne({
+                where: {
+                    role: publicRole.id,
+                    action: `${contentType}.${action}`,
+                },
+            });
 
-            if (!permission) {
-                // Create permission if it doesn't exist
-                await strapi.query('plugin::users-permissions.permission').create({
-                    data: {
-                        action: `${contentType}.${action}`,
-                        role: publicRole.id,
-                        enabled: true,
-                    },
-                });
-            } else if (!permission.enabled) {
-                // Enable permission if it exists but is disabled
-                await strapi.query('plugin::users-permissions.permission').update({
-                    where: { id: permission.id },
-                    data: { enabled: true },
-                });
-            }
+        if (!permission) {
+            // Create permission if it doesn't exist
+            await strapi.query('plugin::users-permissions.permission').create({
+                data: {
+                    action: `${contentType}.${action}`,
+                    role: publicRole.id,
+                    enabled: true,
+                },
+            });
+        } else if (!permission.enabled) {
+            // Enable permission if it exists but is disabled
+            await strapi.query('plugin::users-permissions.permission').update({
+                where: { id: permission.id },
+                data: { enabled: true },
+            });
         }
+    };
+
+    // Enable permissions for collection types (find + findOne)
+    for (const contentType of collectionTypes) {
+        await ensurePermission(contentType, 'find');
+        await ensurePermission(contentType, 'findOne');
+    }
+
+    // Enable permissions for single types (only find)
+    for (const contentType of singleTypes) {
+        await ensurePermission(contentType, 'find');
     }
 
     console.log('✅ Public permissions configured for all NFA content types');
