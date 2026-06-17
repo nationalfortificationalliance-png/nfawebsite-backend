@@ -119,10 +119,6 @@
           "localized": true
         }
       }
-    },
-    "faqs": {
-      "type": "json",
-      "required": false
     }
   }
 }
