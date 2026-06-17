@@ -99,6 +99,10 @@
       "type": "json",
       "required": false
     },
+    "phone_contacts": {
+      "type": "json",
+      "required": false
+    },
     "office_hours": {
       "type": "text",
       "required": false,
