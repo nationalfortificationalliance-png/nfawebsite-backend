@@ -20,10 +20,14 @@ const bootstrap = async ({ strapi }: { strapi: Core.Strapi }) => {
         'api::project.project',
         'api::laboratory.laboratory',
         'api::page-setting.page-setting',
-        'api::subscriber.subscriber',
-        'api::contact-message.contact-message',
         'api::contact-page.contact-page',
-        'api::laboratory.laboratory',
+    ];
+
+    // Form-submission types: the public may create entries but must never
+    // read them back (they contain visitor names, emails, and messages)
+    const submitOnlyTypes = [
+        'api::contact-message.contact-message',
+        'api::subscriber.subscriber',
     ];
 
     // Single types (only support find, not findOne)
@@ -61,6 +65,25 @@ const bootstrap = async ({ strapi }: { strapi: Core.Strapi }) => {
         }
     };
 
+    // Helper function to revoke a permission. In Strapi v5 a permission is
+    // granted by the row's existence, so revoking means deleting the row.
+    const revokePermission = async (contentType: string, action: string) => {
+        const permission = await strapi
+            .query('plugin::users-permissions.permission')
+            .findOne({
+                where: {
+                    role: publicRole.id,
+                    action: `${contentType}.${action}`,
+                },
+            });
+
+        if (permission) {
+            await strapi.query('plugin::users-permissions.permission').delete({
+                where: { id: permission.id },
+            });
+        }
+    };
+
     // Enable permissions for collection types (find + findOne)
     for (const contentType of collectionTypes) {
         await ensurePermission(contentType, 'find');
@@ -70,6 +93,14 @@ const bootstrap = async ({ strapi }: { strapi: Core.Strapi }) => {
     // Enable permissions for single types (only find)
     for (const contentType of singleTypes) {
         await ensurePermission(contentType, 'find');
+    }
+
+    // Form-submission types: create only; revoke any read access granted
+    // by earlier bootstrap versions
+    for (const contentType of submitOnlyTypes) {
+        await ensurePermission(contentType, 'create');
+        await revokePermission(contentType, 'find');
+        await revokePermission(contentType, 'findOne');
     }
 
     console.log('✅ Public permissions configured for all NFA content types');
@@ -117,7 +148,7 @@ async function seedSampleData(strapi: Core.Strapi) {
                 vision:
                     'A Nigeria where micronutrient malnutrition is eliminated through sustainable large-scale food fortification programs.',
                 background:
-                    'The National Fortification Project (NFP) Nigeria was established in response to the growing burden of micronutrient deficiencies affecting millions of Nigerians. Supported by the World Food Programme (WFP) and regulatory oversight from NAFDAC, the NFP brings together government agencies, UN bodies, and the private sector.',
+                    'The National Fortification Alliance (NFA) Nigeria was established in response to the growing burden of micronutrient deficiencies affecting millions of Nigerians. Supported by the World Food Programme (WFP) and regulatory oversight from NAFDAC, the NFA brings together government agencies, UN bodies, and the private sector.',
                 objectives:
                     '1. Increase coverage of fortified staple foods to at least 90% of the population\n2. Strengthen regulatory frameworks for food fortification\n3. Build capacity of food processors and millers\n4. Promote consumer awareness through behaviour change communication\n5. Establish monitoring and evaluation systems for fortification quality',
                 publishedAt: new Date(),
@@ -250,7 +281,7 @@ async function seedSampleData(strapi: Core.Strapi) {
             {
                 name: 'World Food Programme (WFP) Nigeria',
                 website_url: 'https://www.wfp.org/countries/nigeria',
-                description: 'WFP Nigeria leads the National Fortification Project, providing technical assistance, capacity building, and coordination support to strengthen the food fortification ecosystem.',
+                description: 'WFP Nigeria leads the National Fortification Alliance, providing technical assistance, capacity building, and coordination support to strengthen the food fortification ecosystem.',
                 order: 1,
                 is_active: true,
                 partner_type: 'lead',

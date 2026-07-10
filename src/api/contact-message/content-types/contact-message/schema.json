@@ -32,6 +32,12 @@
             "type": "text",
             "required": true
         },
+        "attachments": {
+            "type": "media",
+            "multiple": true,
+            "required": false,
+            "allowedTypes": ["files"]
+        },
         "isRead": {
             "type": "boolean",
             "default": false
