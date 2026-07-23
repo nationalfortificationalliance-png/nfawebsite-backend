@@ -44,6 +44,10 @@
         "footer_text": {
             "type": "text"
         },
+        "stats_source": {
+            "type": "text",
+            "maxLength": 600
+        },
         "logo": {
             "type": "media",
             "multiple": false,
