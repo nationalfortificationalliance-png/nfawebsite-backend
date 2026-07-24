@@ -466,6 +466,30 @@ async function seedSampleData(strapi: Core.Strapi) {
         console.log('✅ About page stats/timeline backfilled');
     }
 
+    // Seed Approved Laboratories
+    const existingLabs = await strapi.entityService.findMany(
+        'api::laboratory.laboratory',
+        {}
+    );
+    if (!existingLabs || (existingLabs as any[]).length === 0) {
+        const labsData = [
+            { name: 'Saag Chemicals', location: 'Lagos', contact: '08025589200', order: 1 },
+            { name: 'Remaben Scientific Services Ltd', location: 'Ikeja', contact: '08023037743', order: 2 },
+            { name: 'Bato Chemical Labs Ltd', location: 'Ogun State', contact: '08091972222', order: 3 },
+            { name: 'Jawura Environmental Services Ltd', location: 'Lagos', contact: '09058592802', order: 4 },
+            { name: 'LS Scientific Limited', location: 'Ikeja', contact: '08094709004', order: 5 },
+            { name: 'Alfa Laboratories', location: 'Lagos', contact: '08023093103', order: 6 },
+            { name: 'Katchey Laboratory', location: 'Ikeja', contact: '08036209410', order: 7 },
+            { name: 'Bureau Veritas Nigeria Ltd', location: 'Ogun State', contact: '08095559245', order: 8 },
+        ];
+        for (const lab of labsData) {
+            await strapi.entityService.create('api::laboratory.laboratory', {
+                data: { ...lab, publishedAt: new Date() },
+            });
+        }
+        console.log('✅ Approved laboratories seeded');
+    }
+
     // (Carousels require images, skipping automated seeding)
 
     // Seed News & Events
