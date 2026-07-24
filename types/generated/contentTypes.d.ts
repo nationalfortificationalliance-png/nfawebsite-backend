@@ -702,7 +702,81 @@ export interface ApiGlobalSettingGlobalSetting extends Struct.SingleTypeSchema {
     site_name: Schema.Attribute.String &
       Schema.Attribute.DefaultTo<'National Fortification Alliance'>;
     site_tagline: Schema.Attribute.String;
+    stats_source: Schema.Attribute.Text &
+      Schema.Attribute.SetMinMaxLength<{
+        maxLength: 600;
+      }>;
     twitter_url: Schema.Attribute.String;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+  };
+}
+
+export interface ApiGovernanceRepresentativeGovernanceRepresentative
+  extends Struct.CollectionTypeSchema {
+  collectionName: 'governance_representatives';
+  info: {
+    description: 'NFA leadership/representative profiles shown on the Governance & Compliance page';
+    displayName: 'Governance Representative';
+    pluralName: 'governance-representatives';
+    singularName: 'governance-representative';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  pluginOptions: {
+    i18n: {
+      localized: true;
+    };
+  };
+  attributes: {
+    bio: Schema.Attribute.Text &
+      Schema.Attribute.Required &
+      Schema.Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }>;
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    is_active: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<true>;
+    key_contributions: Schema.Attribute.Component<'shared.bullet-point', true>;
+    locale: Schema.Attribute.String;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::governance-representative.governance-representative'
+    >;
+    name: Schema.Attribute.String & Schema.Attribute.Required;
+    order: Schema.Attribute.Integer & Schema.Attribute.DefaultTo<0>;
+    organization_key: Schema.Attribute.Enumeration<
+      ['NAFDAC', 'SON', 'FMOHSW', 'FCCPC', 'Industry', 'Development Partners']
+    > &
+      Schema.Attribute.Required;
+    organization_name: Schema.Attribute.String &
+      Schema.Attribute.Required &
+      Schema.Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }>;
+    organization_profile: Schema.Attribute.Text &
+      Schema.Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }>;
+    organization_short_name: Schema.Attribute.String;
+    photo: Schema.Attribute.Media<'images'>;
+    publishedAt: Schema.Attribute.DateTime;
+    title: Schema.Attribute.String &
+      Schema.Attribute.Required &
+      Schema.Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }>;
     updatedAt: Schema.Attribute.DateTime;
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
@@ -1755,6 +1829,7 @@ declare module '@strapi/strapi' {
       'api::contact-message.contact-message': ApiContactMessageContactMessage;
       'api::contact-page.contact-page': ApiContactPageContactPage;
       'api::global-setting.global-setting': ApiGlobalSettingGlobalSetting;
+      'api::governance-representative.governance-representative': ApiGovernanceRepresentativeGovernanceRepresentative;
       'api::guideline-document.guideline-document': ApiGuidelineDocumentGuidelineDocument;
       'api::laboratory.laboratory': ApiLaboratoryLaboratory;
       'api::news-event.news-event': ApiNewsEventNewsEvent;

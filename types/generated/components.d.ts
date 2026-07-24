@@ -1,5 +1,16 @@
 import type { Schema, Struct } from '@strapi/strapi';
 
+export interface SharedBulletPoint extends Struct.ComponentSchema {
+  collectionName: 'components_shared_bullet_points';
+  info: {
+    description: 'A single itemized contribution/responsibility line';
+    displayName: 'Bullet Point';
+  };
+  attributes: {
+    text: Schema.Attribute.String & Schema.Attribute.Required;
+  };
+}
+
 export interface SharedSeo extends Struct.ComponentSchema {
   collectionName: 'components_shared_seos';
   info: {
@@ -22,6 +33,7 @@ export interface SharedSeo extends Struct.ComponentSchema {
 declare module '@strapi/strapi' {
   export module Public {
     export interface ComponentSchemas {
+      'shared.bullet-point': SharedBulletPoint;
       'shared.seo': SharedSeo;
     }
   }
