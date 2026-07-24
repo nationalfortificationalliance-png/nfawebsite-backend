@@ -21,6 +21,7 @@ const bootstrap = async ({ strapi }: { strapi: Core.Strapi }) => {
         'api::laboratory.laboratory',
         'api::page-setting.page-setting',
         'api::contact-page.contact-page',
+        'api::governance-representative.governance-representative',
     ];
 
     // Form-submission types: the public may create entries but must never
@@ -105,11 +106,125 @@ const bootstrap = async ({ strapi }: { strapi: Core.Strapi }) => {
 
     console.log('✅ Public permissions configured for all NFA content types');
 
+    // Seed real governance representative profiles (idempotent, runs in all environments)
+    await seedGovernanceRepresentatives(strapi);
+
     // Seed sample data if environment is development and DB is empty
     if (process.env.NODE_ENV === 'development') {
         await seedSampleData(strapi);
     }
 };
+
+async function seedGovernanceRepresentatives(strapi: Core.Strapi) {
+    const existing = await strapi.entityService.findMany(
+        'api::governance-representative.governance-representative',
+        {}
+    );
+    if (existing && (existing as any[]).length > 0) return;
+
+    const bullets = (items: string[]) => items.map((text) => ({ text }));
+
+    const representatives = [
+        {
+            name: 'Mr. Fred Chiazor',
+            title: 'Chairman, National Fortification Alliance',
+            organization_name: 'Association of Food, Beverage and Tobacco Employers (AFBTE)',
+            organization_short_name: 'AFBTE',
+            organization_key: 'Industry',
+            bio: 'Mr. Fred Chiazor, FNIFST, serves as the Chairman of the National Fortification Alliance (NFA), where he provides strategic leadership for Nigeria\'s multi-sectoral food fortification programme. He is also the Chairman of the Association of Food, Beverage and Tobacco Employers (AFBTE) and a seasoned regulatory and technical affairs professional with extensive experience in the food and beverage industry. A Fellow of the Nigerian Institute of Food Science and Technology (FNIFST), he has championed industry collaboration, regulatory compliance, food standards, sustainability, and public-private partnerships. Through his leadership, he continues to foster constructive engagement between industry, government, and development partners to strengthen food fortification, improve nutrition outcomes, and advance food safety in Nigeria.',
+            organization_profile: 'The Association of Food, Beverage and Tobacco Employers (AFBTE) is a leading industry body representing manufacturers in Nigeria\'s food, beverage, and tobacco sectors. The Association promotes responsible manufacturing, regulatory compliance, quality assurance, and sustainable industry growth through constructive engagement with government institutions, regulatory agencies, and other stakeholders. As a key member of the National Fortification Alliance (NFA), AFBTE provides industry leadership, supports the implementation of mandatory food fortification standards, advocates for enabling policies, and facilitates collaboration to strengthen food systems, improve product quality, and contribute to better nutrition and public health outcomes in Nigeria.',
+            key_contributions: bullets([
+                'Provides strategic leadership as Chairman of the National Fortification Alliance',
+                'Represents the food manufacturing industry within the Alliance through AFBTE',
+                'Promotes public-private collaboration to strengthen food fortification programmes',
+                'Advocates for industry compliance with national food fortification standards',
+                'Supports policy dialogue, technical coordination, and stakeholder engagement',
+                'Champions initiatives that improve food quality, nutrition, and consumer health',
+                'Leads the industry on production and distribution of adequately fortified foods',
+                'Commitment to co-sponsoring NFA meetings',
+                'Support for food fortification research',
+                'Social marketing and awareness creation on the consumption of fortified foods',
+            ]),
+            order: 1,
+            is_active: true,
+            publishedAt: new Date(),
+        },
+        {
+            name: 'Yunusa B. Mohammed',
+            title: 'Vice Chair, National Fortification Alliance / Director, Standards Development Department',
+            organization_name: 'Standards Organisation of Nigeria (SON)',
+            organization_short_name: 'SON',
+            organization_key: 'SON',
+            bio: 'Yunusa B. Mohammed represents the Standards Organisation of Nigeria (SON) as the Vice Chair of the National Fortification Alliance (NFA) and currently serves as the Director of the Standards Development Department. A biochemistry graduate from Bayero University, Kano, Yunusa (fondly known as YB) is an accomplished lead auditor specializing in Food Safety Management Systems (FSMS) and Quality Management Systems (QMS). With a distinguished career beginning in SON\'s Food and Chemistry Laboratory, he has developed profound expertise in standard elaboration and regulatory compliance. Notably, he initiated SON\'s Vitamin A Laboratory and is a trained ISO/IEC 17025 Laboratory Assessor and ISO 27001 Lead Auditor. As a driving force in national nutrition and standardization, YB serves on the Regulatory Core Group, the National Technical Advisory Group on Large-Scale Food Fortification (LSFF), and the Country Working Group on Bouillon Fortification, and heads the National Codex Contact Point.',
+            organization_profile: 'Established under the SON Act of 2015, as amended, the Standards Organisation of Nigeria (SON) is the apex national statutory body mandated to prepare, implement, enforce and regulate standards for all products, processes, systems, measurements, and materials nationwide. In food fortification, SON leads initiatives to combat malnutrition by formulating strict regulatory standards, including factory monitoring and micronutrient laboratory testing, in partnership with NAFDAC, FCCPC, FMOHSW, industry, and development partners.',
+            key_contributions: bullets([
+                'Vice Chair of the NFA',
+                'Elaboration, review, and adoption of standards in collaboration with stakeholders',
+                'Monitoring and testing of fortified foods at the factory level for compliance',
+                'Funding of monitoring activities and laboratory testing',
+                'Capacity building of SON staff and stakeholders on food fortification',
+                'Serves as Secretariat for the USI/IDD Taskforce',
+                'Hosting of USI/IDD Taskforce meetings',
+                'Collaboration and support to IPAN to ensure proper laboratory certification',
+                'Sponsoring participation of SON members in NFA meetings',
+            ]),
+            order: 2,
+            is_active: true,
+            publishedAt: new Date(),
+        },
+        {
+            name: 'Mrs. Eva O. Edwards',
+            title: 'Secretariat, National Fortification Alliance / Director, Food Safety and Applied Nutrition (FSAN)',
+            organization_name: 'National Agency for Food and Drug Administration and Control (NAFDAC)',
+            organization_short_name: 'NAFDAC',
+            organization_key: 'NAFDAC',
+            bio: 'Mrs. Eva O. Edwards represents the National Agency for Food and Drug Administration and Control (NAFDAC) as the Secretariat of the National Fortification Alliance (NFA) and currently serves as Director of the Food Safety and Applied Nutrition (FSAN) Directorate. She is a distinguished food safety and nutrition expert with over 25 years of regulatory experience spanning food legislation, food fortification, Codex standards, nutrition policy, and public health. She serves on several national and international technical committees, including the WHO Technical Advisory Group on Food Safety, and is Nigeria\'s FAO/WHO INFOSAN Emergency Contact Point. Over the years as a regulator in NAFDAC, Eva has garnered an advanced level of technical knowledge and experience across food legislation, food standards, food labelling, GHP/GMP inspections, HACCP, food fortification, micronutrient deficiencies, and infant and young child nutrition.',
+            organization_profile: 'The National Agency for Food and Drug Administration and Control (NAFDAC) is Nigeria\'s apex regulatory authority established by the NAFDAC Act, Cap N1, Laws of the Federation of Nigeria (LFN) 2004, to regulate and control the manufacture, importation, exportation, distribution, advertisement, sale, and use of food, drugs, cosmetics, medical devices, chemicals, packaged water, and related regulated products. As the Secretariat of the National Fortification Alliance (NFA), NAFDAC provides regulatory leadership for Nigeria\'s food fortification programme through policy and regulatory development, product registration, premix import control, compliance monitoring, laboratory analysis, stakeholder coordination, capacity building, and enforcement of mandatory food fortification standards.',
+            key_contributions: bullets([
+                'Serves as the Secretariat of the National Fortification Alliance',
+                'Issuance of marketing authorization to fortified food products',
+                'Registration of micronutrient premix and provision of updated lists of approved premix suppliers',
+                'Provision of updated lists of approved single micronutrient suppliers',
+                'Monitoring and testing of fortified foods at distributor, retail, and port levels for compliance',
+                'Funding of monitoring and laboratory testing',
+                'Capacity building of NAFDAC staff on food fortification',
+                'Review, revision, and drafting of regulations for fortified food products',
+                'Sponsoring participation of NAFDAC members in NFA meetings',
+            ]),
+            order: 3,
+            is_active: true,
+            publishedAt: new Date(),
+        },
+        {
+            name: 'Dr. Nkechi Mba',
+            title: 'Director, Quality Assurance and Development',
+            organization_name: 'Federal Competition and Consumer Protection Commission (FCCPC)',
+            organization_short_name: 'FCCPC',
+            organization_key: 'FCCPC',
+            bio: 'Dr. Nkechi Mba represents the Federal Competition and Consumer Protection Commission (FCCPC) on the National Fortification Alliance (NFA) and currently serves as Director, Quality Assurance and Development. She is an experienced consumer protection and quality assurance professional with expertise in food quality, consumer rights, regulatory compliance, stakeholder engagement, and public awareness. Through her leadership, she has championed initiatives that promote safe, nutritious, and quality food products while strengthening consumer confidence in Nigeria\'s food system. Within the NFA, Dr. Mba provides strategic support for consumer-focused food fortification initiatives, household monitoring, public sensitization, and multi-sectoral collaboration aimed at improving nutrition outcomes and protecting consumer welfare.',
+            organization_profile: 'The Federal Competition and Consumer Protection Commission (FCCPC) is established under the Federal Competition and Consumer Protection Act, 2018, as Nigeria\'s apex consumer protection and competition regulator. The Commission is mandated to promote fair competition, protect consumer rights, eliminate unsafe and unfair trade practices, and ensure access to safe, quality goods and services. As a member of the National Fortification Alliance (NFA), FCCPC promotes consumer awareness of fortified foods, supports household-level monitoring, advocates compliance with mandatory food fortification standards, and safeguards consumers by ensuring they receive safe, nutritious, and value-for-money food products.',
+            key_contributions: bullets([
+                'Represents consumer interests in the governance of the National Fortification Alliance',
+                'Promotes consumer awareness and public sensitization on fortified foods',
+                'Supports household monitoring of fortified food products',
+                'Contributes to stakeholder engagement and behaviour change communication',
+                'Supports implementation of digital food fortification monitoring initiatives (DFQT+)',
+                'Advocates compliance with mandatory food fortification standards to protect consumer welfare',
+                'Sponsoring participation of members in NFA meetings',
+            ]),
+            order: 4,
+            is_active: true,
+            publishedAt: new Date(),
+        },
+    ];
+
+    for (const rep of representatives) {
+        await strapi.entityService.create('api::governance-representative.governance-representative', {
+            data: rep as any,
+        });
+    }
+    console.log('✅ Governance representative profiles seeded');
+}
 
 async function seedSampleData(strapi: Core.Strapi) {
     // Seed Global Settings

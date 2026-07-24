@@ -1,0 +1,14 @@
+{
+    "collectionName": "components_shared_bullet_points",
+    "info": {
+        "displayName": "Bullet Point",
+        "description": "A single itemized contribution/responsibility line"
+    },
+    "options": {},
+    "attributes": {
+        "text": {
+            "type": "string",
+            "required": true
+        }
+    }
+}
