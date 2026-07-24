@@ -362,6 +362,110 @@ async function seedSampleData(strapi: Core.Strapi) {
         console.log('✅ About page seeded');
     }
 
+    // Backfill About Page stats/timeline sections (added after initial seed above,
+    // so existing entries need an explicit update rather than a create-if-missing check).
+    // Uses the Document Service API + explicit publish so both the draft and published
+    // rows get the new component data — entityService.update only touches whichever
+    // single row entityService.findMany happens to return (see governance-representative
+    // backfill above for the same gotcha).
+    const aboutRows = await strapi.db.query('api::about-page.about-page').findMany({
+        populate: ['challenge_stats', 'key_stats', 'key_stats.sub_stats', 'timeline_items'],
+    });
+    const aboutNeedsBackfill = aboutRows.some(
+        (row: any) =>
+            (!row.challenge_stats || row.challenge_stats.length === 0) ||
+            (!row.key_stats || row.key_stats.length === 0) ||
+            (!row.timeline_items || row.timeline_items.length === 0)
+    );
+    if (aboutRows.length > 0 && aboutNeedsBackfill) {
+        const documentId = (aboutRows[0] as any).documentId;
+        await strapi.documents('api::about-page.about-page').update({
+            documentId,
+            data: {
+                history_intro:
+                    "Mandatory food fortification of selected staple food vehicles—including wheat flour, maize flour, sugar, and vegetable oil—commenced in Nigeria in 2002 as a core national strategy for combating micronutrient deficiencies. In 2004, the NFA was formally established under the chairmanship of the then National Planning Commission to mobilize stakeholders for coordinated implementation.",
+                challenge_eyebrow: 'The Scale of the Problem',
+                challenge_heading: "Nigeria's Hidden Hunger Crisis",
+                challenge_stats: [
+                    {
+                        value: '37%',
+                        label: 'Child Stunting Rate',
+                        description: '37% of children under 5 are stunted — one of the highest rates in sub-Saharan Africa.',
+                        source: 'National Nutrition and Health Survey',
+                    },
+                    {
+                        value: '30%',
+                        label: 'Vitamin A Deficiency',
+                        description: 'Nearly 1 in 3 children are Vitamin A deficient, risking blindness, immune weakness, and developmental impact.',
+                        source: 'National Nutrition and Health Survey',
+                    },
+                    {
+                        value: '72%',
+                        label: 'Women with Anaemia',
+                        description: '72% of women of reproductive age are anaemic, primarily due to iron deficiency — with serious maternal and infant health consequences.',
+                        source: 'National Nutrition and Health Survey',
+                    },
+                ] as any,
+                key_stats: [
+                    {
+                        value: '2002',
+                        title: 'Programme Initiation',
+                        description: "The year Nigeria's mandatory food fortification programme was officially launched.",
+                        accent_color: 'none',
+                        source: 'NFA Programme Records',
+                        sub_stats: [
+                            { label: 'NFA Established', value: '2004' },
+                        ],
+                    },
+                    {
+                        value: '57%',
+                        title: 'National Compliance',
+                        description: 'Average compliance across all mandatory food vehicles in Nigeria.',
+                        accent_color: 'blue',
+                        source: 'NAFDAC Compliance Monitoring Report',
+                        sub_stats: [
+                            { label: 'Salt (Iodized)', value: '67%' },
+                            { label: 'Veg Oil (Vit A)', value: '58%' },
+                            { label: 'Flour (Vit A)', value: '48%' },
+                        ],
+                    },
+                    {
+                        value: '37%',
+                        title: 'Child Stunting',
+                        description: 'Prevalence of stunting among children under five years of age.',
+                        accent_color: 'gold',
+                        source: 'National Nutrition and Health Survey',
+                        sub_stats: [
+                            { label: 'Vitamin A Deficiency', value: '~30%' },
+                            { label: 'Anaemia (Women)', value: '60–70%' },
+                        ],
+                    },
+                    {
+                        value: '92%',
+                        title: 'Calcium Inadequacy',
+                        description: 'High prevalence of calcium deficiency across children and pregnant women.',
+                        accent_color: 'green',
+                        source: 'National Nutrition and Health Survey',
+                        sub_stats: [
+                            { label: 'Non-Pregnant Women', value: '95%' },
+                            { label: 'Pregnant Women', value: '92%' },
+                            { label: 'Children', value: '92%' },
+                        ],
+                    },
+                ] as any,
+                timeline_items: [
+                    { year: '2004', event: 'Nigeria enacts the Food, Drugs and Related Products (Fortification) Regulation, making fortification mandatory for key staple foods.' },
+                    { year: '2011', event: 'WFP Nigeria launches the National Fortification Alliance with NAFDAC to strengthen enforcement and processor capacity across 6 key food vehicles.' },
+                    { year: '2016', event: 'Coverage of Vitamin A-fortified vegetable oil reaches 70% of households. NFA introduces the national quality mark seal for certified products.' },
+                    { year: '2020', event: "NFA expands to include Maize Flour and Wheat Flour in NAFDAC's mass fortification mandate. Premix fund established for small processors." },
+                    { year: '2024', event: 'Over 200 processors certified across 36 states, reaching 12M+ consumers. NFA achieves 68% household coverage of fortified staple foods.' },
+                ] as any,
+            },
+        });
+        await strapi.documents('api::about-page.about-page').publish({ documentId });
+        console.log('✅ About page stats/timeline backfilled');
+    }
+
     // (Carousels require images, skipping automated seeding)
 
     // Seed News & Events

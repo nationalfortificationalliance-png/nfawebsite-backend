@@ -44,6 +44,32 @@
         "background": {
             "type": "text"
         },
+        "history_intro": {
+            "type": "text"
+        },
+        "challenge_eyebrow": {
+            "type": "string",
+            "maxLength": 255
+        },
+        "challenge_heading": {
+            "type": "string",
+            "maxLength": 255
+        },
+        "challenge_stats": {
+            "type": "component",
+            "repeatable": true,
+            "component": "about.challenge-stat"
+        },
+        "key_stats": {
+            "type": "component",
+            "repeatable": true,
+            "component": "about.key-stat"
+        },
+        "timeline_items": {
+            "type": "component",
+            "repeatable": true,
+            "component": "about.timeline-item"
+        },
         "seo": {
             "type": "component",
             "repeatable": false,

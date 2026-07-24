@@ -449,6 +449,15 @@ export interface ApiAboutPageAboutPage extends Struct.SingleTypeSchema {
   attributes: {
     background: Schema.Attribute.Text;
     body: Schema.Attribute.RichText;
+    challenge_eyebrow: Schema.Attribute.String &
+      Schema.Attribute.SetMinMaxLength<{
+        maxLength: 255;
+      }>;
+    challenge_heading: Schema.Attribute.String &
+      Schema.Attribute.SetMinMaxLength<{
+        maxLength: 255;
+      }>;
+    challenge_stats: Schema.Attribute.Component<'about.challenge-stat', true>;
     createdAt: Schema.Attribute.DateTime;
     createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
@@ -457,6 +466,8 @@ export interface ApiAboutPageAboutPage extends Struct.SingleTypeSchema {
       Schema.Attribute.SetMinMaxLength<{
         maxLength: 255;
       }>;
+    history_intro: Schema.Attribute.Text;
+    key_stats: Schema.Attribute.Component<'about.key-stat', true>;
     locale: Schema.Attribute.String;
     localizations: Schema.Attribute.Relation<
       'oneToMany',
@@ -466,6 +477,7 @@ export interface ApiAboutPageAboutPage extends Struct.SingleTypeSchema {
     objectives: Schema.Attribute.Text;
     publishedAt: Schema.Attribute.DateTime;
     seo: Schema.Attribute.Component<'shared.seo', false>;
+    timeline_items: Schema.Attribute.Component<'about.timeline-item', true>;
     updatedAt: Schema.Attribute.DateTime;
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;

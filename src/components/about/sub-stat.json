@@ -1,0 +1,18 @@
+{
+    "collectionName": "components_about_sub_stats",
+    "info": {
+        "displayName": "Sub Stat",
+        "description": "A nested label/value line inside a key stat card"
+    },
+    "options": {},
+    "attributes": {
+        "label": {
+            "type": "string",
+            "required": true
+        },
+        "value": {
+            "type": "string",
+            "required": true
+        }
+    }
+}

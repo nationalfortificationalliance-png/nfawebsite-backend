@@ -1,0 +1,18 @@
+{
+    "collectionName": "components_about_timeline_items",
+    "info": {
+        "displayName": "Timeline Item",
+        "description": "A year/event entry in the About page's Two Decades of Progress timeline"
+    },
+    "options": {},
+    "attributes": {
+        "year": {
+            "type": "string",
+            "required": true
+        },
+        "event": {
+            "type": "text",
+            "required": true
+        }
+    }
+}

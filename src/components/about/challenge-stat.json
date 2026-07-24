@@ -1,0 +1,24 @@
+{
+    "collectionName": "components_about_challenge_stats",
+    "info": {
+        "displayName": "Challenge Stat",
+        "description": "A stat item in the About page's Hidden Hunger Crisis section"
+    },
+    "options": {},
+    "attributes": {
+        "value": {
+            "type": "string",
+            "required": true
+        },
+        "label": {
+            "type": "string",
+            "required": true
+        },
+        "description": {
+            "type": "text"
+        },
+        "source": {
+            "type": "string"
+        }
+    }
+}
