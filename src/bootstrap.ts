@@ -513,7 +513,8 @@ async function seedSampleData(strapi: Core.Strapi) {
     }
 
     // Seed Industry Challenges
-    const challengesData: { text: string; category: string }[] = [
+    type ChallengeCategory = 'Supply Chain' | 'Technical & Equipment' | 'Quality & Compliance' | 'Regulatory & Customs';
+    const challengesData: { text: string; category: ChallengeCategory }[] = [
         { text: 'Scarcity of Vitamin A Palmitate', category: 'Supply Chain' },
         { text: 'Foreign exchange constraints affecting premix supply', category: 'Supply Chain' },
         { text: 'Technical limitations in fortification equipment', category: 'Technical & Equipment' },
