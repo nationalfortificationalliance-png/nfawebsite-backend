@@ -1,4 +1,6 @@
 import type { Core } from '@strapi/strapi';
+import fs from 'fs';
+import path from 'path';
 
 const bootstrap = async ({ strapi }: { strapi: Core.Strapi }) => {
     // Set public role permissions for read-only access on all published content
@@ -115,12 +117,37 @@ const bootstrap = async ({ strapi }: { strapi: Core.Strapi }) => {
     }
 };
 
+const ORG_LOGO_FILES: Record<string, string> = {
+    NAFDAC: 'NAFDAC_emblem.png',
+    SON: 'son_png.png',
+    FMOHSW: 'Nigeria_Federal_Ministry_of_Health_Logo.png',
+    FCCPC: 'fccpc_logo.png',
+};
+
+const MIME_TYPES: Record<string, string> = {
+    png: 'image/png',
+    jpg: 'image/jpeg',
+    jpeg: 'image/jpeg',
+};
+
+async function uploadLocalImage(strapi: Core.Strapi, fileName: string) {
+    const filepath = path.join(process.cwd(), 'src', 'seed-assets', 'org-logos', fileName);
+    const { size } = fs.statSync(filepath);
+    const ext = path.extname(fileName).slice(1).toLowerCase();
+    const [uploaded] = await strapi.plugin('upload').service('upload').upload({
+        data: {},
+        files: {
+            filepath,
+            originalFilename: fileName,
+            mimetype: MIME_TYPES[ext] || 'application/octet-stream',
+            size,
+        },
+    });
+    return uploaded;
+}
+
 async function seedGovernanceRepresentatives(strapi: Core.Strapi) {
-    const existing = await strapi.entityService.findMany(
-        'api::governance-representative.governance-representative',
-        {}
-    );
-    if (existing && (existing as any[]).length > 0) return;
+    const uid = 'api::governance-representative.governance-representative';
 
     const bullets = (items: string[]) => items.map((text) => ({ text }));
 
@@ -216,11 +243,74 @@ async function seedGovernanceRepresentatives(strapi: Core.Strapi) {
             is_active: true,
             publishedAt: new Date(),
         },
+        {
+            name: '',
+            title: '',
+            organization_name: 'Federal Ministry of Health and Social Welfare (FMOHSW)',
+            organization_short_name: 'FMOHSW',
+            organization_key: 'FMOHSW',
+            bio: '',
+            organization_profile: '',
+            key_contributions: bullets([
+                'Nutrition policy development',
+                'Advocate for an enabling environment to promote local production of micronutrients in Nigeria',
+                'Support for NFA coordination and activities',
+                'Advocacy activities with relevant bodies in the area of food fortification in Nigeria',
+                'Provide support for NFA meetings',
+            ]),
+            order: 5,
+            is_active: true,
+            publishedAt: new Date(),
+        },
+        {
+            name: '',
+            title: '',
+            organization_name: 'Development Partners',
+            organization_short_name: '',
+            organization_key: 'Development Partners',
+            bio: '',
+            organization_profile: '',
+            key_contributions: bullets([
+                'Technical assistance',
+                'Capacity building',
+                'Laboratory strengthening',
+                'Financial support',
+                'Public awareness creation',
+            ]),
+            order: 6,
+            is_active: true,
+            publishedAt: new Date(),
+        },
     ];
 
     for (const rep of representatives) {
-        await strapi.entityService.create('api::governance-representative.governance-representative', {
-            data: rep as any,
+        const existing = await strapi.db.query(uid).findMany({
+            where: { organization_key: rep.organization_key },
+            populate: ['organization_logo'],
+        }) as any[];
+
+        const logoFileName = ORG_LOGO_FILES[rep.organization_key];
+
+        if (existing && existing.length > 0) {
+            const entry = existing[0] as any;
+            const missingLogo = existing.some((e) => !e.organization_logo);
+            if (logoFileName && missingLogo) {
+                const uploaded = await uploadLocalImage(strapi, logoFileName);
+                await strapi.documents(uid).update({
+                    documentId: entry.documentId,
+                    data: { organization_logo: uploaded.id } as any,
+                });
+                await strapi.documents(uid).publish({ documentId: entry.documentId });
+            }
+            continue;
+        }
+
+        const organization_logo = logoFileName
+            ? (await uploadLocalImage(strapi, logoFileName)).id
+            : undefined;
+
+        await strapi.entityService.create(uid, {
+            data: { ...rep, organization_logo } as any,
         });
     }
     console.log('✅ Governance representative profiles seeded');

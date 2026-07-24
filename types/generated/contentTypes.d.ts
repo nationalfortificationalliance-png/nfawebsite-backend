@@ -732,7 +732,6 @@ export interface ApiGovernanceRepresentativeGovernanceRepresentative
   };
   attributes: {
     bio: Schema.Attribute.Text &
-      Schema.Attribute.Required &
       Schema.Attribute.SetPluginOptions<{
         i18n: {
           localized: true;
@@ -748,12 +747,13 @@ export interface ApiGovernanceRepresentativeGovernanceRepresentative
       'oneToMany',
       'api::governance-representative.governance-representative'
     >;
-    name: Schema.Attribute.String & Schema.Attribute.Required;
+    name: Schema.Attribute.String;
     order: Schema.Attribute.Integer & Schema.Attribute.DefaultTo<0>;
     organization_key: Schema.Attribute.Enumeration<
       ['NAFDAC', 'SON', 'FMOHSW', 'FCCPC', 'Industry', 'Development Partners']
     > &
       Schema.Attribute.Required;
+    organization_logo: Schema.Attribute.Media<'images'>;
     organization_name: Schema.Attribute.String &
       Schema.Attribute.Required &
       Schema.Attribute.SetPluginOptions<{
@@ -771,7 +771,6 @@ export interface ApiGovernanceRepresentativeGovernanceRepresentative
     photo: Schema.Attribute.Media<'images'>;
     publishedAt: Schema.Attribute.DateTime;
     title: Schema.Attribute.String &
-      Schema.Attribute.Required &
       Schema.Attribute.SetPluginOptions<{
         i18n: {
           localized: true;

@@ -18,11 +18,11 @@
     "attributes": {
         "name": {
             "type": "string",
-            "required": true
+            "required": false
         },
         "title": {
             "type": "string",
-            "required": true,
+            "required": false,
             "pluginOptions": {
                 "i18n": {
                     "localized": true
@@ -40,6 +40,14 @@
         },
         "organization_short_name": {
             "type": "string"
+        },
+        "organization_logo": {
+            "type": "media",
+            "multiple": false,
+            "required": false,
+            "allowedTypes": [
+                "images"
+            ]
         },
         "organization_key": {
             "type": "enumeration",
@@ -63,7 +71,7 @@
         },
         "bio": {
             "type": "text",
-            "required": true,
+            "required": false,
             "pluginOptions": {
                 "i18n": {
                     "localized": true
