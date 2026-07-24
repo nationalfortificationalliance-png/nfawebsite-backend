@@ -24,6 +24,9 @@ const bootstrap = async ({ strapi }: { strapi: Core.Strapi }) => {
         'api::page-setting.page-setting',
         'api::contact-page.contact-page',
         'api::governance-representative.governance-representative',
+        'api::meeting-schedule.meeting-schedule',
+        'api::industry-challenge.industry-challenge',
+        'api::member-organization.member-organization',
     ];
 
     // Form-submission types: the public may create entries but must never
@@ -488,6 +491,117 @@ async function seedSampleData(strapi: Core.Strapi) {
             });
         }
         console.log('✅ Approved laboratories seeded');
+    }
+
+    // Seed Meeting Schedule
+    const existingMeetings = await strapi.entityService.findMany(
+        'api::meeting-schedule.meeting-schedule',
+        {}
+    );
+    if (!existingMeetings || (existingMeetings as any[]).length === 0) {
+        const meetingsData = [
+            { year: '2026', june_host: 'NAFDAC', december_host: 'Industry', order: 1 },
+            { year: '2027', june_host: 'SON', december_host: 'FCCPC', order: 2 },
+            { year: '2028', june_host: 'FMoHSW', december_host: 'NAFDAC', order: 3 },
+        ];
+        for (const meeting of meetingsData) {
+            await strapi.entityService.create('api::meeting-schedule.meeting-schedule', {
+                data: { ...meeting, publishedAt: new Date() },
+            });
+        }
+        console.log('✅ Meeting schedule seeded');
+    }
+
+    // Seed Industry Challenges
+    const challengesData: { text: string; category: string }[] = [
+        { text: 'Scarcity of Vitamin A Palmitate', category: 'Supply Chain' },
+        { text: 'Foreign exchange constraints affecting premix supply', category: 'Supply Chain' },
+        { text: 'Technical limitations in fortification equipment', category: 'Technical & Equipment' },
+        { text: 'Challenges with shelf-life stability studies', category: 'Technical & Equipment' },
+        { text: 'Technical capacity gaps in micronutrient testing', category: 'Technical & Equipment' },
+        { text: 'Inconsistencies in laboratory analytical results', category: 'Quality & Compliance' },
+        { text: 'Packaging and storage limitations', category: 'Quality & Compliance' },
+        { text: 'Informal retail packaging challenges', category: 'Quality & Compliance' },
+        { text: 'Inconsistent customs tariff implementation', category: 'Regulatory & Customs' },
+        { text: 'Inadequate monitoring of imported products', category: 'Regulatory & Customs' },
+    ];
+    const existingChallenges = await strapi.entityService.findMany(
+        'api::industry-challenge.industry-challenge',
+        {}
+    );
+    if (!existingChallenges || (existingChallenges as any[]).length === 0) {
+        for (let i = 0; i < challengesData.length; i++) {
+            await strapi.entityService.create('api::industry-challenge.industry-challenge', {
+                data: { ...challengesData[i], order: i + 1, publishedAt: new Date() },
+            });
+        }
+        console.log('✅ Industry challenges seeded');
+    } else {
+        // Backfill category on rows created before the category field existed
+        const challengeRows = await strapi.db.query('api::industry-challenge.industry-challenge').findMany({});
+        const needsCategoryBackfill = challengeRows.some((row: any) => !row.category);
+        if (needsCategoryBackfill) {
+            for (const row of challengeRows as any[]) {
+                const match = challengesData.find((c) => c.text === row.text);
+                if (match && !row.category) {
+                    await strapi.documents('api::industry-challenge.industry-challenge').update({
+                        documentId: row.documentId,
+                        data: { category: match.category },
+                    });
+                    await strapi.documents('api::industry-challenge.industry-challenge').publish({ documentId: row.documentId });
+                }
+            }
+            console.log('✅ Industry challenge categories backfilled');
+        }
+    }
+
+    // Seed Member Organizations
+    const membersData: { name: string; category: string; logoKey?: string }[] = [
+        { name: 'Standards Organisation of Nigeria (SON)', category: 'Core Members', logoKey: 'SON' },
+        { name: 'National Agency for Food and Drug Administration and Control (NAFDAC)', category: 'Core Members', logoKey: 'NAFDAC' },
+        { name: 'Federal Ministry of Education (FME)', category: 'Core Members' },
+        { name: 'Federal Competition and Consumer Protection Commission (FCCPC)', category: 'Core Members', logoKey: 'FCCPC' },
+        { name: 'Federal Ministry of Health and Social Welfare (FMoHSW) — Nutrition Department', category: 'Core Members', logoKey: 'FMOHSW' },
+        { name: 'Federal Ministry of Agriculture and Food Security (FMAFS)', category: 'Core Members' },
+        { name: 'Federal Ministry of Budget and Economic Planning (FMBEP)', category: 'Core Members' },
+        { name: 'Institute of Public Analysts of Nigeria (IPAN)', category: 'Core Members' },
+        { name: 'Federal Ministry of Information and National Orientation (FMINO)', category: 'Core Members' },
+        { name: 'Industry', category: 'Core Members' },
+        { name: 'Development Partners (GAIN, HKI, TechnoServe, WFP, UNICEF, etc.)', category: 'Stakeholders' },
+        { name: 'Academia', category: 'Stakeholders' },
+        { name: 'Professional Associations (e.g., NIFST, NSN)', category: 'Stakeholders' },
+        { name: 'Civil Society Organisations (CSOs) / Non-Governmental Organisations (NGOs)', category: 'Stakeholders' },
+        { name: 'Media', category: 'Stakeholders' },
+    ];
+    const existingMembers = await strapi.entityService.findMany(
+        'api::member-organization.member-organization',
+        {}
+    );
+    if (!existingMembers || (existingMembers as any[]).length === 0) {
+        for (let i = 0; i < membersData.length; i++) {
+            const { logoKey, ...rest } = membersData[i];
+            const logo = logoKey ? (await uploadLocalImage(strapi, ORG_LOGO_FILES[logoKey])).id : undefined;
+            await strapi.entityService.create('api::member-organization.member-organization', {
+                data: { ...rest, logo, order: i + 1, publishedAt: new Date() } as any,
+            });
+        }
+        console.log('✅ Member organizations seeded');
+    } else {
+        // Backfill logo media on rows created before the logo field existed
+        const memberRows = await strapi.db.query('api::member-organization.member-organization').findMany({
+            populate: ['logo'],
+        });
+        for (const row of memberRows as any[]) {
+            const match = membersData.find((m) => m.name === row.name);
+            if (match?.logoKey && !row.logo) {
+                const logo = (await uploadLocalImage(strapi, ORG_LOGO_FILES[match.logoKey])).id;
+                await strapi.documents('api::member-organization.member-organization').update({
+                    documentId: row.documentId,
+                    data: { logo } as any,
+                });
+                await strapi.documents('api::member-organization.member-organization').publish({ documentId: row.documentId });
+            }
+        }
     }
 
     // (Carousels require images, skipping automated seeding)

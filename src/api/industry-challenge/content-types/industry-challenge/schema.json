@@ -1,0 +1,43 @@
+{
+    "kind": "collectionType",
+    "collectionName": "industry_challenges",
+    "info": {
+        "singularName": "industry-challenge",
+        "pluralName": "industry-challenges",
+        "displayName": "Industry Challenge",
+        "description": "Identified operational hurdles the NFA is working to mitigate"
+    },
+    "options": {
+        "draftAndPublish": true
+    },
+    "pluginOptions": {
+        "i18n": {
+            "localized": true
+        }
+    },
+    "attributes": {
+        "text": {
+            "type": "string",
+            "required": true,
+            "maxLength": 255
+        },
+        "category": {
+            "type": "enumeration",
+            "enum": [
+                "Supply Chain",
+                "Technical & Equipment",
+                "Quality & Compliance",
+                "Regulatory & Customs"
+            ],
+            "default": "Supply Chain"
+        },
+        "is_active": {
+            "type": "boolean",
+            "default": true
+        },
+        "order": {
+            "type": "integer",
+            "default": 0
+        }
+    }
+}

@@ -845,6 +845,55 @@ export interface ApiGuidelineDocumentGuidelineDocument
   };
 }
 
+export interface ApiIndustryChallengeIndustryChallenge
+  extends Struct.CollectionTypeSchema {
+  collectionName: 'industry_challenges';
+  info: {
+    description: 'Identified operational hurdles the NFA is working to mitigate';
+    displayName: 'Industry Challenge';
+    pluralName: 'industry-challenges';
+    singularName: 'industry-challenge';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  pluginOptions: {
+    i18n: {
+      localized: true;
+    };
+  };
+  attributes: {
+    category: Schema.Attribute.Enumeration<
+      [
+        'Supply Chain',
+        'Technical & Equipment',
+        'Quality & Compliance',
+        'Regulatory & Customs',
+      ]
+    > &
+      Schema.Attribute.DefaultTo<'Supply Chain'>;
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    is_active: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<true>;
+    locale: Schema.Attribute.String;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::industry-challenge.industry-challenge'
+    >;
+    order: Schema.Attribute.Integer & Schema.Attribute.DefaultTo<0>;
+    publishedAt: Schema.Attribute.DateTime;
+    text: Schema.Attribute.String &
+      Schema.Attribute.Required &
+      Schema.Attribute.SetMinMaxLength<{
+        maxLength: 255;
+      }>;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+  };
+}
+
 export interface ApiLaboratoryLaboratory extends Struct.CollectionTypeSchema {
   collectionName: 'laboratories';
   info: {
@@ -892,6 +941,99 @@ export interface ApiLaboratoryLaboratory extends Struct.CollectionTypeSchema {
     order: Schema.Attribute.Integer & Schema.Attribute.DefaultTo<0>;
     publishedAt: Schema.Attribute.DateTime;
     services: Schema.Attribute.RichText;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+  };
+}
+
+export interface ApiMeetingScheduleMeetingSchedule
+  extends Struct.CollectionTypeSchema {
+  collectionName: 'meeting_schedules';
+  info: {
+    description: 'NFA biannual meeting host rotation, by year';
+    displayName: 'Meeting Schedule';
+    pluralName: 'meeting-schedules';
+    singularName: 'meeting-schedule';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  pluginOptions: {
+    i18n: {
+      localized: true;
+    };
+  };
+  attributes: {
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    december_host: Schema.Attribute.String &
+      Schema.Attribute.Required &
+      Schema.Attribute.SetMinMaxLength<{
+        maxLength: 100;
+      }>;
+    is_active: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<true>;
+    june_host: Schema.Attribute.String &
+      Schema.Attribute.Required &
+      Schema.Attribute.SetMinMaxLength<{
+        maxLength: 100;
+      }>;
+    locale: Schema.Attribute.String;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::meeting-schedule.meeting-schedule'
+    >;
+    order: Schema.Attribute.Integer & Schema.Attribute.DefaultTo<0>;
+    publishedAt: Schema.Attribute.DateTime;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    year: Schema.Attribute.String &
+      Schema.Attribute.Required &
+      Schema.Attribute.SetMinMaxLength<{
+        maxLength: 20;
+      }>;
+  };
+}
+
+export interface ApiMemberOrganizationMemberOrganization
+  extends Struct.CollectionTypeSchema {
+  collectionName: 'member_organizations';
+  info: {
+    description: 'NFA membership entries (Core Members and Stakeholders)';
+    displayName: 'Member Organization';
+    pluralName: 'member-organizations';
+    singularName: 'member-organization';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  pluginOptions: {
+    i18n: {
+      localized: true;
+    };
+  };
+  attributes: {
+    category: Schema.Attribute.Enumeration<['Core Members', 'Stakeholders']> &
+      Schema.Attribute.DefaultTo<'Core Members'>;
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    is_active: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<true>;
+    locale: Schema.Attribute.String;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::member-organization.member-organization'
+    >;
+    logo: Schema.Attribute.Media<'images'>;
+    name: Schema.Attribute.String &
+      Schema.Attribute.Required &
+      Schema.Attribute.SetMinMaxLength<{
+        maxLength: 255;
+      }>;
+    order: Schema.Attribute.Integer & Schema.Attribute.DefaultTo<0>;
+    publishedAt: Schema.Attribute.DateTime;
     updatedAt: Schema.Attribute.DateTime;
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
@@ -1842,7 +1984,10 @@ declare module '@strapi/strapi' {
       'api::global-setting.global-setting': ApiGlobalSettingGlobalSetting;
       'api::governance-representative.governance-representative': ApiGovernanceRepresentativeGovernanceRepresentative;
       'api::guideline-document.guideline-document': ApiGuidelineDocumentGuidelineDocument;
+      'api::industry-challenge.industry-challenge': ApiIndustryChallengeIndustryChallenge;
       'api::laboratory.laboratory': ApiLaboratoryLaboratory;
+      'api::meeting-schedule.meeting-schedule': ApiMeetingScheduleMeetingSchedule;
+      'api::member-organization.member-organization': ApiMemberOrganizationMemberOrganization;
       'api::news-event.news-event': ApiNewsEventNewsEvent;
       'api::page-setting.page-setting': ApiPageSettingPageSetting;
       'api::partner.partner': ApiPartnerPartner;
