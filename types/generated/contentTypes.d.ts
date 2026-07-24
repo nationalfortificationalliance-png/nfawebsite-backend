@@ -1059,7 +1059,7 @@ export interface ApiNewsEventNewsEvent extends Struct.CollectionTypeSchema {
   attributes: {
     body: Schema.Attribute.RichText & Schema.Attribute.Required;
     category: Schema.Attribute.Enumeration<
-      ['news', 'event', 'announcement', 'report']
+      ['news', 'event', 'communique', 'report']
     > &
       Schema.Attribute.Required &
       Schema.Attribute.DefaultTo<'news'>;
@@ -1071,6 +1071,7 @@ export interface ApiNewsEventNewsEvent extends Struct.CollectionTypeSchema {
       Schema.Attribute.SetMinMaxLength<{
         maxLength: 400;
       }>;
+    file: Schema.Attribute.Media<'files'>;
     gallery: Schema.Attribute.Media<'images', true>;
     image: Schema.Attribute.Media<'images'>;
     is_featured: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<false>;

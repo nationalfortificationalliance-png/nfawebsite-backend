@@ -59,11 +59,19 @@
             "enum": [
                 "news",
                 "event",
-                "announcement",
+                "communique",
                 "report"
             ],
             "default": "news",
             "required": true
+        },
+        "file": {
+            "type": "media",
+            "multiple": false,
+            "required": false,
+            "allowedTypes": [
+                "files"
+            ]
         },
         "is_featured": {
             "type": "boolean",

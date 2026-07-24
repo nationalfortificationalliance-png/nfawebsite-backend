@@ -638,7 +638,7 @@ async function seedSampleData(strapi: Core.Strapi) {
                 title: 'NAFDAC Certifies 45 Additional Food Processors for Fortification',
                 excerpt: 'The regulatory agency grants certification to forty-five new food processors, bringing the total to over 200 certified operations.',
                 body: '<p>NAFDAC has issued fortification certification to 45 additional food processing companies following successful compliance assessments. This expansion increases the estimated reach of compliant fortified foods to an additional 12 million consumers.</p>',
-                category: 'announcement',
+                category: 'report',
                 date: '2024-10-22',
                 is_featured: false,
                 slug: 'nafdac-certifies-45-additional-food-processors',
