@@ -119,6 +119,10 @@ const bootstrap = async ({ strapi }: { strapi: Core.Strapi }) => {
     // including production — real legal copy will replace this later.
     await seedPrivacyPolicy(strapi);
 
+    // Seed/backfill the About Page (history, stats, timeline) so this real content
+    // reaches production too, instead of relying on the frontend's hardcoded fallback text.
+    await seedAboutPage(strapi);
+
     // Seed sample data if environment is development and DB is empty
     if (process.env.NODE_ENV === 'development') {
         await seedSampleData(strapi);
@@ -330,29 +334,7 @@ async function seedGovernanceRepresentatives(strapi: Core.Strapi) {
     console.log('✅ Governance representative profiles seeded');
 }
 
-async function seedSampleData(strapi: Core.Strapi) {
-    // Seed Global Settings
-    const existingSettings = await strapi.entityService.findMany(
-        'api::global-setting.global-setting',
-        {}
-    );
-    if (!existingSettings || Object.keys(existingSettings).length === 0) {
-        await strapi.entityService.create('api::global-setting.global-setting', {
-            data: {
-                site_name: 'National Fortification Alliance',
-                site_tagline: 'Nourishing Nigeria Through Food Fortification',
-                contact_email: 'info@nfa.gov.ng',
-                contact_phone: '+234 9 123 4567',
-                address: '31 Olusegun Obasanjo Way, Wuse, Abuja, Nigeria',
-                footer_text: '© 2024 National Fortification Alliance. Supported by WFP Nigeria.',
-                twitter_url: 'https://twitter.com/WFP_Nigeria',
-                facebook_url: 'https://facebook.com/WFPNigeria',
-                linkedin_url: 'https://linkedin.com/company/wfp-nigeria',
-            },
-        });
-        console.log('✅ Global settings seeded');
-    }
-
+async function seedAboutPage(strapi: Core.Strapi) {
     // Seed About Page
     const existingAbout = await strapi.entityService.findMany(
         'api::about-page.about-page',
@@ -389,7 +371,8 @@ async function seedSampleData(strapi: Core.Strapi) {
         (row: any) =>
             (!row.challenge_stats || row.challenge_stats.length === 0) ||
             (!row.key_stats || row.key_stats.length === 0) ||
-            (!row.timeline_items || row.timeline_items.length === 0)
+            (!row.timeline_items || row.timeline_items.length === 0) ||
+            !row.history_intro
     );
     if (aboutRows.length > 0 && aboutNeedsBackfill) {
         const documentId = (aboutRows[0] as any).documentId;
@@ -397,7 +380,7 @@ async function seedSampleData(strapi: Core.Strapi) {
             documentId,
             data: {
                 history_intro:
-                    "Mandatory food fortification of selected staple food vehicles—including wheat flour, maize flour, sugar, and vegetable oil—commenced in Nigeria in 2002 as a core national strategy for combating micronutrient deficiencies. In 2004, the NFA was formally established under the chairmanship of the then National Planning Commission to mobilize stakeholders for coordinated implementation.",
+                    "Mandatory food fortification of selected staple food vehicles (wheat flour, maize flour, sugar, and vegetable oil) commenced in Nigeria as one of the national strategies for combating micronutrient deficiencies and improving public health outcomes.",
                 challenge_eyebrow: 'The Scale of the Problem',
                 challenge_heading: "Nigeria's Hidden Hunger Crisis",
                 challenge_stats: [
@@ -478,6 +461,30 @@ async function seedSampleData(strapi: Core.Strapi) {
         });
         await strapi.documents('api::about-page.about-page').publish({ documentId });
         console.log('✅ About page stats/timeline backfilled');
+    }
+}
+
+async function seedSampleData(strapi: Core.Strapi) {
+    // Seed Global Settings
+    const existingSettings = await strapi.entityService.findMany(
+        'api::global-setting.global-setting',
+        {}
+    );
+    if (!existingSettings || Object.keys(existingSettings).length === 0) {
+        await strapi.entityService.create('api::global-setting.global-setting', {
+            data: {
+                site_name: 'National Fortification Alliance',
+                site_tagline: 'Nourishing Nigeria Through Food Fortification',
+                contact_email: 'info@nfa.gov.ng',
+                contact_phone: '+234 9 123 4567',
+                address: '31 Olusegun Obasanjo Way, Wuse, Abuja, Nigeria',
+                footer_text: '© 2024 National Fortification Alliance. Supported by WFP Nigeria.',
+                twitter_url: 'https://twitter.com/WFP_Nigeria',
+                facebook_url: 'https://facebook.com/WFPNigeria',
+                linkedin_url: 'https://linkedin.com/company/wfp-nigeria',
+            },
+        });
+        console.log('✅ Global settings seeded');
     }
 
     // Seed Approved Laboratories
