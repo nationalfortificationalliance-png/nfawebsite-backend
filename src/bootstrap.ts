@@ -21,13 +21,13 @@ const bootstrap = async ({ strapi }: { strapi: Core.Strapi }) => {
         'api::team-member.team-member',
         'api::project.project',
         'api::laboratory.laboratory',
-        'api::page-setting.page-setting',
         'api::contact-page.contact-page',
         'api::governance-representative.governance-representative',
         'api::meeting-schedule.meeting-schedule',
         'api::industry-challenge.industry-challenge',
         'api::member-organization.member-organization',
         'api::compliance-report.compliance-report',
+        'api::faq.faq',
     ];
 
     // Form-submission types: the public may create entries but must never
@@ -128,6 +128,12 @@ const bootstrap = async ({ strapi }: { strapi: Core.Strapi }) => {
     if (process.env.NODE_ENV === 'development') {
         await seedSampleData(strapi);
     }
+
+    // Add plain-language field descriptions to the admin edit views so a
+    // non-technical editor understands what each field does and where it
+    // appears on the live site. Purely cosmetic — never hides or reorders
+    // fields, only fills in the "description" hint text under each one.
+    await configureContentManagerFieldHints(strapi);
 };
 
 const ORG_LOGO_FILES: Record<string, string> = {
@@ -366,12 +372,10 @@ async function seedAboutPage(strapi: Core.Strapi) {
     // single row entityService.findMany happens to return (see governance-representative
     // backfill above for the same gotcha).
     const aboutRows = await strapi.db.query('api::about-page.about-page').findMany({
-        populate: ['challenge_stats', 'key_stats', 'key_stats.sub_stats', 'timeline_items'],
+        populate: ['timeline_items'],
     });
     const aboutNeedsBackfill = aboutRows.some(
         (row: any) =>
-            (!row.challenge_stats || row.challenge_stats.length === 0) ||
-            (!row.key_stats || row.key_stats.length === 0) ||
             (!row.timeline_items || row.timeline_items.length === 0) ||
             !row.history_intro
     );
@@ -383,81 +387,6 @@ async function seedAboutPage(strapi: Core.Strapi) {
         if (!row.history_intro) {
             data.history_intro =
                 "What began as a regulatory mandate to fortify Nigeria's staple foods has grown into a coordinated, multi-stakeholder programme — spanning government, industry, and development partners — reaching millions of households with essential vitamins and minerals.";
-        }
-
-        if (!row.challenge_stats || row.challenge_stats.length === 0) {
-            data.challenge_eyebrow = 'The Scale of the Problem';
-            data.challenge_heading = "Nigeria's Hidden Hunger Crisis";
-            data.challenge_stats = [
-                {
-                    value: '37%',
-                    label: 'Child Stunting Rate',
-                    description: '37% of children under 5 are stunted — one of the highest rates in sub-Saharan Africa.',
-                    source: 'National Nutrition and Health Survey',
-                },
-                {
-                    value: '30%',
-                    label: 'Vitamin A Deficiency',
-                    description: 'Nearly 1 in 3 children are Vitamin A deficient, risking blindness, immune weakness, and developmental impact.',
-                    source: 'National Nutrition and Health Survey',
-                },
-                {
-                    value: '72%',
-                    label: 'Women with Anaemia',
-                    description: '72% of women of reproductive age are anaemic, primarily due to iron deficiency — with serious maternal and infant health consequences.',
-                    source: 'National Nutrition and Health Survey',
-                },
-            ] as any;
-        }
-
-        if (!row.key_stats || row.key_stats.length === 0) {
-            data.key_stats = [
-                {
-                    value: '2002',
-                    title: 'Programme Initiation',
-                    description: "The year Nigeria's mandatory food fortification programme was officially launched.",
-                    accent_color: 'none',
-                    source: 'NFA Programme Records',
-                    sub_stats: [
-                        { label: 'NFA Established', value: '2004' },
-                    ],
-                },
-                {
-                    value: '57%',
-                    title: 'National Compliance',
-                    description: 'Average compliance across all mandatory food vehicles in Nigeria.',
-                    accent_color: 'blue',
-                    source: 'NAFDAC Compliance Monitoring Report',
-                    sub_stats: [
-                        { label: 'Salt (Iodized)', value: '67%' },
-                        { label: 'Veg Oil (Vit A)', value: '58%' },
-                        { label: 'Flour (Vit A)', value: '48%' },
-                    ],
-                },
-                {
-                    value: '37%',
-                    title: 'Child Stunting',
-                    description: 'Prevalence of stunting among children under five years of age.',
-                    accent_color: 'gold',
-                    source: 'National Nutrition and Health Survey',
-                    sub_stats: [
-                        { label: 'Vitamin A Deficiency', value: '~30%' },
-                        { label: 'Anaemia (Women)', value: '60–70%' },
-                    ],
-                },
-                {
-                    value: '92%',
-                    title: 'Calcium Inadequacy',
-                    description: 'High prevalence of calcium deficiency across children and pregnant women.',
-                    accent_color: 'green',
-                    source: 'National Nutrition and Health Survey',
-                    sub_stats: [
-                        { label: 'Non-Pregnant Women', value: '95%' },
-                        { label: 'Pregnant Women', value: '92%' },
-                        { label: 'Children', value: '92%' },
-                    ],
-                },
-            ] as any;
         }
 
         if (!row.timeline_items || row.timeline_items.length === 0) {
@@ -564,6 +493,128 @@ async function seedSampleData(strapi: Core.Strapi) {
             },
         });
         console.log('✅ Compliance report seeded');
+    }
+
+    // Seed FAQs
+    const existingFAQs = await strapi.entityService.findMany('api::faq.faq', {});
+    if (!existingFAQs || (existingFAQs as any[]).length === 0) {
+        const faqsData = [
+            {
+                question: 'What is food fortification?',
+                answer: 'Food fortification is the process of adding essential vitamins and minerals to commonly consumed foods to improve their nutritional value. In Nigeria, fortification is mandatory for wheat flour, vegetable oil, sugar, and salt to combat micronutrient deficiencies.',
+                category: 'General',
+                order: 1,
+            },
+            {
+                question: 'Which foods are mandated for fortification in Nigeria?',
+                answer: 'Nigeria mandates fortification of six key food vehicles: wheat flour (with iron, folic acid, zinc, vitamin B12), vegetable oil (with vitamin A), sugar (with vitamin A), and salt (with iodine). These foods were chosen based on consumption patterns and their ability to reach large populations.',
+                category: 'General',
+                order: 2,
+            },
+            {
+                question: 'How do I become a certified fortification processor?',
+                answer: 'To become certified, food processors must: (1) Register with NAFDAC, (2) Install appropriate fortification equipment, (3) Implement quality assurance and quality control systems, (4) Train staff on fortification protocols, (5) Pass NAFDAC facility inspections, and (6) Demonstrate consistent compliance through product testing.',
+                category: 'Certification',
+                order: 3,
+            },
+            {
+                question: 'What is the role of the National Fortification Alliance?',
+                answer: "The NFA serves as the coordination platform bringing together government agencies (NAFDAC, SON, FMoH), industry partners, development organizations (WFP, GAIN), academia, and civil society to strengthen Nigeria's food fortification program through policy advocacy, capacity building, monitoring, and stakeholder engagement.",
+                category: 'About NFA',
+                order: 4,
+            },
+            {
+                question: 'How can I verify if a product is properly fortified?',
+                answer: 'Look for the NAFDAC fortification logo/seal on product packaging. Certified products must display this mark. Consumers can also report suspected non-compliance to NAFDAC through their hotline or the NFA secretariat.',
+                category: 'General',
+                order: 5,
+            },
+            {
+                question: 'Where can I access fortification guidelines and standards?',
+                answer: 'All technical guidelines, regulatory standards, and compliance documents are available on our Guidelines page. This includes NAFDAC regulations, SON standards, WHO recommendations, and operational manuals for processors.',
+                category: 'Resources',
+                order: 6,
+            },
+        ];
+        for (const faq of faqsData) {
+            await strapi.entityService.create('api::faq.faq', {
+                data: { ...faq, is_active: true, publishedAt: new Date() },
+            });
+        }
+        console.log('✅ FAQs seeded');
+    }
+
+    // Seed Initiatives (Project & Initiative content type, shown on the Initiatives page)
+    const existingInitiatives = await strapi.entityService.findMany('api::project.project', {});
+    if (!existingInitiatives || (existingInitiatives as any[]).length === 0) {
+        const initiativesData = [
+            {
+                title: 'Rice Fortification',
+                icon: 'trending-up',
+                description: 'Partnering with millers, regulators and distributors to make fortified rice more available, affordable and trusted across Nigeria.',
+                highlights: [
+                    { text: 'Scale fortified rice production and distribution' },
+                    { text: 'Strengthen regulatory compliance and lab checks' },
+                    { text: 'Support premix market development' },
+                    { text: 'Build industry and laboratory capacity' },
+                    { text: 'Raise consumer awareness and demand' },
+                ],
+                category: 'Fortification',
+                status: 'Active',
+                order: 1,
+            },
+            {
+                title: 'Bouillon Fortification',
+                icon: 'search',
+                description: 'Evaluating bouillon cubes as a strategic fortification vehicle while balancing nutrition benefit and sodium reduction priorities.',
+                highlights: [
+                    { text: 'Conduct nutrient profiling and taste studies' },
+                    { text: 'Assess iodine and sodium impacts' },
+                    { text: 'Analyze consumer behavior' },
+                    { text: 'Develop draft standards and codes of practice' },
+                    { text: 'Coordinate industry engagement' },
+                ],
+                category: 'Research',
+                status: 'Active',
+                order: 2,
+            },
+            {
+                title: 'DFQT+ Digital Monitoring',
+                icon: 'activity',
+                description: 'Deploying digital traceability and quality monitoring systems that help regulators and producers track fortified products in near real time.',
+                highlights: [
+                    { text: 'Support digital compliance workflows' },
+                    { text: 'Chart premix and product traceability' },
+                    { text: 'Improve audit efficiency' },
+                    { text: 'Drive informed enforcement' },
+                    { text: 'Strengthen governance and transparency' },
+                ],
+                category: 'Technology',
+                status: 'Active',
+                order: 3,
+            },
+        ];
+        for (const initiative of initiativesData) {
+            await strapi.entityService.create('api::project.project', {
+                data: { ...initiative, is_active: true, is_featured: true, publishedAt: new Date() } as any,
+            });
+        }
+        console.log('✅ Initiatives seeded');
+    }
+
+    // Backfill: any project rows created before the is_active field existed
+    // default to null, which would hide them under the new is_active filter.
+    const projectRows = await strapi.db.query('api::project.project').findMany({});
+    const inactiveProjectRows = (projectRows as any[]).filter((row) => row.is_active === null);
+    for (const row of inactiveProjectRows) {
+        await strapi.documents('api::project.project').update({
+            documentId: row.documentId,
+            data: { is_active: true },
+        });
+        await strapi.documents('api::project.project').publish({ documentId: row.documentId });
+    }
+    if (inactiveProjectRows.length > 0) {
+        console.log(`✅ Backfilled is_active on ${inactiveProjectRows.length} existing initiative(s)`);
     }
 
     // Seed Industry Challenges
@@ -832,6 +883,276 @@ async function seedSampleData(strapi: Core.Strapi) {
         }
         console.log('✅ Partners seeded');
     }
+}
+
+// Plain-language hint text shown under each field in the admin edit view,
+// keyed by content-type/component uid, then field name. Only fills in the
+// `description` shown to the editor — never touches field order or visibility.
+const FIELD_HINTS: Record<string, Record<string, string>> = {
+    'api::about-page.about-page': {
+        mission: "The Alliance's core mission statement, shown near the top of the About page.",
+        vision: 'The long-term vision statement shown on the About page.',
+        hero_tagline: 'Short tagline shown over the banner image at the top of the About page.',
+        hero_image: 'Background photo for the banner at the top of the About page.',
+        body: "Main introductory text describing the Alliance's work.",
+        objectives: 'The list of strategic objectives shown on the About page.',
+        background: 'Background/context paragraph explaining why the Alliance was formed.',
+        history_intro: 'Short introduction shown above the History timeline. Leave blank to hide this text.',
+        timeline_items: 'The year-by-year History timeline. Add one entry per milestone.',
+        seo: "Search engine title/description for this page (optional — improves how it appears in Google search results).",
+    },
+    'api::carousel.carousel': {
+        title: 'Main heading shown on this homepage hero slide.',
+        subtitle: 'Supporting text shown below the heading on this slide.',
+        image: 'Background photo for this hero slide.',
+        link_url: "Where the slide's button links to, e.g. /about.",
+        link_text: "Text shown on the slide's button, e.g. 'Learn More'.",
+        order: 'Controls the order slides appear in (lower numbers show first).',
+        is_active: 'Turn off to hide this slide from the homepage without deleting it.',
+    },
+    'api::compliance-report.compliance-report': {
+        year: 'The year this compliance data covers, e.g. 2024.',
+        national_compliance: 'Overall national compliance percentage for that year, e.g. 57%.',
+        salt_compliance: 'Iodized salt compliance percentage.',
+        veg_oil_compliance: 'Vitamin A vegetable oil compliance percentage.',
+        flour_compliance: 'Fortified flour compliance percentage.',
+        source: 'Where this data came from, e.g. NAFDAC Compliance Monitoring Report.',
+        is_active: "Turn off to hide this year's report without deleting it.",
+        order: 'Controls display order on the News & Events page (lower numbers show first).',
+    },
+    'api::contact-message.contact-message': {
+        name: 'Name entered by the visitor who submitted the contact form.',
+        email: 'Email address of the visitor.',
+        subject: 'Subject line of the message.',
+        message: 'The message content submitted by the visitor.',
+        attachments: 'Any file the visitor attached to their message.',
+        isRead: 'Whether this message has been marked as read.',
+    },
+    'api::contact-page.contact-page': {
+        hero_title: 'Main heading on the Contact page banner.',
+        hero_description: 'Supporting text shown under the heading on the Contact page.',
+        hero_image: 'Background photo for the Contact page banner.',
+        office_name: 'Name of the office shown in the address block, e.g. NAFDAC Office.',
+        address_line_1: 'First line of the office address.',
+        address_line_2: 'Second line of the office address.',
+        address_line_3: 'Third line of the office address.',
+        address_line_4: 'Fourth line of the office address.',
+        address_line_5: 'Fifth line of the office address (e.g. country).',
+        email_contacts: 'List of email contacts shown on the Contact page. Advanced field — must stay in JSON format, e.g. [{"label":"General Inquiries","email":"info@example.com"}].',
+        phone_contacts: 'List of phone contacts shown on the Contact page. Advanced field — must stay in JSON format, e.g. [{"label":"NFA Secretariat","phone":"08000000000"}].',
+        office_hours: 'Office opening hours text, one line per day/range.',
+        office_hours_note: 'Small note shown under office hours, e.g. holiday closures.',
+    },
+    'api::faq.faq': {
+        question: 'The question text shown on the FAQ page.',
+        answer: 'The answer shown when the question is expanded.',
+        category: 'Groups related questions together under a heading, e.g. General, Certification.',
+        order: 'Controls display order within its category (lower numbers show first).',
+        is_active: 'Turn off to hide this question without deleting it.',
+    },
+    'api::global-setting.global-setting': {
+        site_name: 'The name of the website/organisation, used across the site and in the browser tab.',
+        site_tagline: 'Short tagline shown alongside the site name.',
+        contact_email: 'Main contact email address used site-wide.',
+        contact_phone: 'Main contact phone number used site-wide.',
+        address: 'Main office address used site-wide (e.g. in the footer).',
+        twitter_url: "Link to the organisation's X/Twitter page.",
+        facebook_url: "Link to the organisation's Facebook page.",
+        linkedin_url: "Link to the organisation's LinkedIn page.",
+        footer_text: 'Text shown in the website footer, e.g. copyright line.',
+        stats_source: 'Citation shown under the nutrition statistics on the Home and About pages.',
+        logo: "The organisation's logo, shown in the site header.",
+        seo: "Default search engine title/description used when a page doesn't set its own.",
+    },
+    'api::governance-representative.governance-representative': {
+        name: 'Full name of the representative.',
+        title: 'Their job title or role.',
+        organization_name: 'Full name of the organisation they represent.',
+        organization_short_name: 'Short name/acronym of the organisation, e.g. NAFDAC.',
+        organization_logo: 'Logo of the organisation they represent.',
+        organization_key: 'Which organisation this representative belongs to — used to group representatives on the Governance page.',
+        photo: 'Photo of the representative.',
+        bio: 'Short biography of the representative.',
+        organization_profile: "Short description of the organisation's role within the Alliance.",
+        key_contributions: "Bullet list of this organisation's key contributions/responsibilities.",
+        order: 'Controls display order (lower numbers show first).',
+        is_active: 'Turn off to hide this representative without deleting them.',
+        last_updated: "Date this entry's information was last verified/updated.",
+    },
+    'api::guideline-document.guideline-document': {
+        title: 'Name of the document as shown on the Resources page.',
+        description: 'Short description of what the document contains.',
+        file: 'The document file itself (PDF, Word, etc.) for visitors to download.',
+        category: 'Which section of the Resources page this document appears under.',
+        published_date: 'Date the document was published — used for sorting, newest first.',
+        file_size: "File size shown next to the download link, e.g. '2.4 MB'.",
+        is_featured: 'Highlight this document at the top of its category.',
+    },
+    'api::industry-challenge.industry-challenge': {
+        text: 'Description of the challenge, shown as a single bullet point.',
+        category: 'Which group of challenges this belongs to on the Resources page.',
+        is_active: 'Turn off to hide this item without deleting it.',
+        order: 'Controls display order within its category (lower numbers show first).',
+    },
+    'api::laboratory.laboratory': {
+        name: 'Name of the approved laboratory.',
+        location: 'City or state where the laboratory is located.',
+        contact: 'Phone number for the laboratory.',
+        email: 'Email address for the laboratory.',
+        address: 'Full postal address of the laboratory.',
+        services: 'List of testing services the laboratory offers.',
+        accreditation: 'Accreditation body/certificate reference, if any.',
+        is_active: 'Turn off to hide this laboratory without deleting it.',
+        order: 'Controls display order (lower numbers show first).',
+    },
+    'api::meeting-schedule.meeting-schedule': {
+        year: 'The year this meeting schedule covers, e.g. 2026.',
+        june_host: 'Organisation hosting the mid-year (June) meeting.',
+        december_host: 'Organisation hosting the year-end (December) meeting.',
+        is_active: "Turn off to hide this year's schedule without deleting it.",
+        order: 'Controls display order (lower numbers show first).',
+    },
+    'api::member-organization.member-organization': {
+        name: 'Name of the member organisation.',
+        category: 'Whether this organisation is a Core Member or wider Stakeholder.',
+        logo: 'Logo of the member organisation.',
+        is_active: 'Turn off to hide this organisation without deleting it.',
+        order: 'Controls display order (lower numbers show first).',
+    },
+    'api::news-event.news-event': {
+        title: 'Headline of the news article or event.',
+        slug: 'Auto-generated web address for this article — usually leave as is.',
+        excerpt: 'Short summary shown in article listing cards.',
+        body: 'Full article content.',
+        date: 'Publish date, or the date of the event.',
+        image: 'Main image shown with the article.',
+        gallery: 'Extra photos shown within the article, if any.',
+        category: 'Whether this is a news article, event, communique, or report.',
+        file: 'Optional attached document, e.g. a communique PDF.',
+        is_featured: 'Highlight this article at the top of the News page.',
+        tags: 'Optional keywords, separated by commas, to help group related articles.',
+        seo: 'Search engine title/description for this specific article.',
+    },
+    'api::partner.partner': {
+        name: 'Name of the partner organisation.',
+        logo: "Partner's logo image.",
+        website_url: "Link to the partner's website.",
+        description: 'Short description of the partnership.',
+        order: 'Controls display order (lower numbers show first).',
+        is_active: 'Turn off to hide this partner without deleting it.',
+        partner_type: 'Category used to group partners on the Partners page.',
+    },
+    'api::privacy-policy.privacy-policy': {
+        title: 'Page title shown at the top of the Privacy Policy page.',
+        last_updated: 'Date the policy was last revised — shown to visitors.',
+        body: 'Full text of the privacy policy.',
+    },
+    'api::project.project': {
+        title: 'Name of the initiative, shown as the card heading.',
+        slug: 'Auto-generated web address for this initiative — usually leave as is.',
+        description: "Summary paragraph shown on the initiative's card.",
+        icon: "Small icon shown at the top of the initiative's card.",
+        highlights: 'Bullet list of key activities shown under the description.',
+        objectives: 'Optional extended objectives text (not currently shown on the public site).',
+        image: 'Optional image for this initiative (not currently shown on the public site).',
+        category: 'Internal grouping category for this initiative (not currently shown on the public site).',
+        status: 'Current status of the initiative (not currently shown on the public site).',
+        start_date: 'Date the initiative started (not currently shown on the public site).',
+        is_featured: 'Highlight this initiative (not currently shown on the public site).',
+        is_active: 'Turn off to hide this initiative from the Initiatives page without deleting it.',
+        order: 'Controls display order (lower numbers show first).',
+    },
+    'api::quote.quote': {
+        text: 'The quote text shown on the Home page.',
+        author_name: 'Name of the person being quoted.',
+        author_title: 'Their job title.',
+        author_organization: 'Their organisation.',
+        author_image: 'Photo of the person being quoted.',
+        is_active: 'Turn off to hide this quote without deleting it. Only one active quote is shown at a time.',
+    },
+    'api::statistic.statistic': {
+        label: "Short label for this statistic, e.g. 'Child Stunting Rate'.",
+        value: "The headline number, e.g. '37%'.",
+        description: 'One sentence explaining the statistic, shown alongside it.',
+        order: 'Controls display order (lower numbers show first).',
+        category: 'Groups related statistics together.',
+        is_featured: 'Include this statistic in the featured set shown on the Home and About pages.',
+    },
+    'api::subscriber.subscriber': {
+        email: 'Email address of the newsletter subscriber.',
+        isActive: 'Whether this subscriber is currently active.',
+    },
+    'api::team-member.team-member': {
+        name: 'Full name of the team member.',
+        role: 'Their job title/role.',
+        bio: 'Short biography.',
+        image: 'Photo of the team member.',
+        order: 'Controls display order (lower numbers show first).',
+        organization: 'Organisation they belong to, if different from NFA.',
+        category: 'Which group they appear under on the Secretariat page: Leadership, Secretariat, or Focal Point.',
+        phone: 'Contact phone number.',
+        email: 'Contact email address.',
+    },
+    'about.timeline-item': {
+        year: 'Year of this milestone, e.g. 2004.',
+        event: 'Description of what happened that year.',
+    },
+    'shared.seo': {
+        metaTitle: 'Page title shown in Google search results and browser tabs (max ~60 characters).',
+        metaDescription: 'Short summary shown under the title in Google search results (max ~160 characters).',
+        shareImage: 'Image shown when this page is shared on social media.',
+    },
+    'shared.bullet-point': {
+        text: 'The bullet point text.',
+    },
+};
+
+async function configureContentManagerFieldHints(strapi: Core.Strapi) {
+    const contentTypesService = strapi.plugin('content-manager').service('content-types');
+    const componentsService = strapi.plugin('content-manager').service('components');
+
+    for (const [uid, hints] of Object.entries(FIELD_HINTS)) {
+        const isComponent = !uid.startsWith('api::');
+        try {
+            const model = isComponent
+                ? componentsService.findComponent(uid)
+                : contentTypesService.findContentType(uid);
+            if (!model) continue;
+
+            const current = isComponent
+                ? await componentsService.findConfiguration(model)
+                : await contentTypesService.findConfiguration(model);
+
+            const metadatas = { ...current.metadatas };
+            let changed = false;
+            for (const [field, description] of Object.entries(hints)) {
+                if (!metadatas[field]) continue;
+                const existingDescription = metadatas[field]?.edit?.description;
+                if (existingDescription === description) continue;
+                metadatas[field] = {
+                    ...metadatas[field],
+                    edit: { ...metadatas[field].edit, description },
+                };
+                changed = true;
+            }
+            if (!changed) continue;
+
+            const newConfig = {
+                settings: current.settings,
+                metadatas,
+                layouts: current.layouts,
+            };
+
+            if (isComponent) {
+                await componentsService.updateConfiguration(model, newConfig);
+            } else {
+                await contentTypesService.updateConfiguration(model, newConfig);
+            }
+        } catch (err) {
+            strapi.log.warn(`Could not set admin field hints for ${uid}: ${(err as Error).message}`);
+        }
+    }
+    console.log('✅ Admin field descriptions configured');
 }
 
 export default bootstrap;

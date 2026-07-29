@@ -4,7 +4,7 @@
     "info": {
         "singularName": "compliance-report",
         "pluralName": "compliance-reports",
-        "displayName": "Compliance Report",
+        "displayName": "News & Events – Compliance Reports",
         "description": "Annual national fortification compliance figures, by year"
     },
     "options": {

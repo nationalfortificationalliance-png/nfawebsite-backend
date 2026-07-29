@@ -4,7 +4,7 @@
     "info": {
         "singularName": "about-page",
         "pluralName": "about-pages",
-        "displayName": "About Page",
+        "displayName": "About – Page Content",
         "description": "Content for the About / Mission page"
     },
     "options": {
@@ -46,19 +46,6 @@
         },
         "history_intro": {
             "type": "text"
-        },
-        "challenge_eyebrow": {
-            "type": "string",
-            "maxLength": 255
-        },
-        "challenge_heading": {
-            "type": "string",
-            "maxLength": 255
-        },
-        "challenge_stats": {
-            "type": "component",
-            "repeatable": true,
-            "component": "about.challenge-stat"
         },
         "timeline_items": {
             "type": "component",

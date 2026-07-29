@@ -4,7 +4,7 @@
     "info": {
         "singularName": "news-event",
         "pluralName": "news-events",
-        "displayName": "News & Event",
+        "displayName": "News & Events – Articles",
         "description": "News articles and project events"
     },
     "options": {

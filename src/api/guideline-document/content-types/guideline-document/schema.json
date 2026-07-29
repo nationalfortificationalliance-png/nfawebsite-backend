@@ -4,7 +4,7 @@
     "info": {
         "singularName": "guideline-document",
         "pluralName": "guideline-documents",
-        "displayName": "Guideline & Document",
+        "displayName": "Resources – Guidelines & Documents",
         "description": "Regulatory guidelines, PDFs and technical documents"
     },
     "options": {

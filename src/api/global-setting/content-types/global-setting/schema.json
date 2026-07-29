@@ -4,7 +4,7 @@
     "info": {
         "singularName": "global-setting",
         "pluralName": "global-settings",
-        "displayName": "Global Settings",
+        "displayName": "Site – Global Settings",
         "description": "Site-wide configuration: contact info, branding, footer"
     },
     "options": {

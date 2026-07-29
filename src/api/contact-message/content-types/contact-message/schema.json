@@ -4,7 +4,7 @@
     "info": {
         "singularName": "contact-message",
         "pluralName": "contact-messages",
-        "displayName": "Contact Message",
+        "displayName": "Contact – Form Submissions",
         "description": "User inquiries from the website"
     },
     "options": {
@@ -36,7 +36,9 @@
             "type": "media",
             "multiple": true,
             "required": false,
-            "allowedTypes": ["files"]
+            "allowedTypes": [
+                "files"
+            ]
         },
         "isRead": {
             "type": "boolean",

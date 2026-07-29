@@ -4,8 +4,8 @@
     "info": {
         "singularName": "project",
         "pluralName": "projects",
-        "displayName": "Project & Initiative",
-        "description": "NFA projects and strategic initiatives"
+        "displayName": "Initiatives – Projects",
+        "description": "NFA projects and strategic initiatives shown on the Initiatives page"
     },
     "options": {
         "draftAndPublish": true
@@ -28,6 +28,61 @@
         "description": {
             "type": "richtext",
             "required": true
+        },
+        "icon": {
+            "type": "enumeration",
+            "enum": [
+                "factory",
+                "home",
+                "map-pin",
+                "users",
+                "wheat",
+                "sun",
+                "droplet",
+                "box",
+                "sparkles",
+                "scale",
+                "handshake",
+                "bar-chart",
+                "clipboard",
+                "microscope",
+                "settings",
+                "graduation-cap",
+                "scroll-text",
+                "newspaper",
+                "calendar",
+                "megaphone",
+                "globe",
+                "landmark",
+                "hospital",
+                "heart-handshake",
+                "stethoscope",
+                "gem",
+                "trending-up",
+                "wrench",
+                "file",
+                "search",
+                "mail",
+                "clock",
+                "truck",
+                "activity",
+                "check-circle",
+                "shield",
+                "monitor",
+                "file-text",
+                "help-circle",
+                "arrow-right",
+                "zap",
+                "phone",
+                "shield-check",
+                "heart-pulse"
+            ],
+            "default": "trending-up"
+        },
+        "highlights": {
+            "type": "component",
+            "repeatable": true,
+            "component": "shared.bullet-point"
         },
         "objectives": {
             "type": "richtext"
@@ -66,6 +121,10 @@
         "is_featured": {
             "type": "boolean",
             "default": false
+        },
+        "is_active": {
+            "type": "boolean",
+            "default": true
         },
         "order": {
             "type": "integer",

@@ -4,7 +4,7 @@
     "info": {
         "singularName": "governance-representative",
         "pluralName": "governance-representatives",
-        "displayName": "Governance Representative",
+        "displayName": "Governance – Representatives",
         "description": "NFA leadership/representative profiles shown on the Governance & Compliance page"
     },
     "options": {

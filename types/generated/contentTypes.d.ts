@@ -434,7 +434,7 @@ export interface ApiAboutPageAboutPage extends Struct.SingleTypeSchema {
   collectionName: 'about_pages';
   info: {
     description: 'Content for the About / Mission page';
-    displayName: 'About Page';
+    displayName: 'About \u2013 Page Content';
     pluralName: 'about-pages';
     singularName: 'about-page';
   };
@@ -449,15 +449,6 @@ export interface ApiAboutPageAboutPage extends Struct.SingleTypeSchema {
   attributes: {
     background: Schema.Attribute.Text;
     body: Schema.Attribute.RichText;
-    challenge_eyebrow: Schema.Attribute.String &
-      Schema.Attribute.SetMinMaxLength<{
-        maxLength: 255;
-      }>;
-    challenge_heading: Schema.Attribute.String &
-      Schema.Attribute.SetMinMaxLength<{
-        maxLength: 255;
-      }>;
-    challenge_stats: Schema.Attribute.Component<'about.challenge-stat', true>;
     createdAt: Schema.Attribute.DateTime;
     createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
@@ -488,7 +479,7 @@ export interface ApiCarouselCarousel extends Struct.CollectionTypeSchema {
   collectionName: 'carousels';
   info: {
     description: 'Hero banner carousel slides';
-    displayName: 'Carousel';
+    displayName: 'Home \u2013 Hero Carousel';
     pluralName: 'carousels';
     singularName: 'carousel';
   };
@@ -538,7 +529,7 @@ export interface ApiComplianceReportComplianceReport
   collectionName: 'compliance_reports';
   info: {
     description: 'Annual national fortification compliance figures, by year';
-    displayName: 'Compliance Report';
+    displayName: 'News & Events \u2013 Compliance Reports';
     pluralName: 'compliance-reports';
     singularName: 'compliance-report';
   };
@@ -599,7 +590,7 @@ export interface ApiContactMessageContactMessage
   collectionName: 'contact_messages';
   info: {
     description: 'User inquiries from the website';
-    displayName: 'Contact Message';
+    displayName: 'Contact \u2013 Form Submissions';
     pluralName: 'contact-messages';
     singularName: 'contact-message';
   };
@@ -637,7 +628,7 @@ export interface ApiContactPageContactPage extends Struct.SingleTypeSchema {
   collectionName: 'contact_page';
   info: {
     description: 'Contact page content and settings';
-    displayName: 'Contact Page';
+    displayName: 'Contact \u2013 Page Content';
     pluralName: 'contact-pages';
     singularName: 'contact-page';
   };
@@ -737,11 +728,52 @@ export interface ApiContactPageContactPage extends Struct.SingleTypeSchema {
   };
 }
 
+export interface ApiFaqFaq extends Struct.CollectionTypeSchema {
+  collectionName: 'faqs';
+  info: {
+    description: 'Frequently asked questions shown on the FAQ page';
+    displayName: 'FAQ \u2013 Questions';
+    pluralName: 'faqs';
+    singularName: 'faq';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  pluginOptions: {
+    i18n: {
+      localized: true;
+    };
+  };
+  attributes: {
+    answer: Schema.Attribute.Text & Schema.Attribute.Required;
+    category: Schema.Attribute.String &
+      Schema.Attribute.SetMinMaxLength<{
+        maxLength: 100;
+      }>;
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    is_active: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<true>;
+    locale: Schema.Attribute.String;
+    localizations: Schema.Attribute.Relation<'oneToMany', 'api::faq.faq'>;
+    order: Schema.Attribute.Integer & Schema.Attribute.DefaultTo<0>;
+    publishedAt: Schema.Attribute.DateTime;
+    question: Schema.Attribute.String &
+      Schema.Attribute.Required &
+      Schema.Attribute.SetMinMaxLength<{
+        maxLength: 300;
+      }>;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+  };
+}
+
 export interface ApiGlobalSettingGlobalSetting extends Struct.SingleTypeSchema {
   collectionName: 'global_settings';
   info: {
     description: 'Site-wide configuration: contact info, branding, footer';
-    displayName: 'Global Settings';
+    displayName: 'Site \u2013 Global Settings';
     pluralName: 'global-settings';
     singularName: 'global-setting';
   };
@@ -790,7 +822,7 @@ export interface ApiGovernanceRepresentativeGovernanceRepresentative
   collectionName: 'governance_representatives';
   info: {
     description: 'NFA leadership/representative profiles shown on the Governance & Compliance page';
-    displayName: 'Governance Representative';
+    displayName: 'Governance \u2013 Representatives';
     pluralName: 'governance-representatives';
     singularName: 'governance-representative';
   };
@@ -860,7 +892,7 @@ export interface ApiGuidelineDocumentGuidelineDocument
   collectionName: 'guideline_documents';
   info: {
     description: 'Regulatory guidelines, PDFs and technical documents';
-    displayName: 'Guideline & Document';
+    displayName: 'Resources \u2013 Guidelines & Documents';
     pluralName: 'guideline-documents';
     singularName: 'guideline-document';
   };
@@ -911,7 +943,7 @@ export interface ApiIndustryChallengeIndustryChallenge
   collectionName: 'industry_challenges';
   info: {
     description: 'Identified operational hurdles the NFA is working to mitigate';
-    displayName: 'Industry Challenge';
+    displayName: 'Resources \u2013 Industry Challenges';
     pluralName: 'industry-challenges';
     singularName: 'industry-challenge';
   };
@@ -959,7 +991,7 @@ export interface ApiLaboratoryLaboratory extends Struct.CollectionTypeSchema {
   collectionName: 'laboratories';
   info: {
     description: 'Approved micronutrient testing laboratories';
-    displayName: 'Laboratory';
+    displayName: 'Resources \u2013 Approved Laboratories';
     pluralName: 'laboratories';
     singularName: 'laboratory';
   };
@@ -1013,7 +1045,7 @@ export interface ApiMeetingScheduleMeetingSchedule
   collectionName: 'meeting_schedules';
   info: {
     description: 'NFA biannual meeting host rotation, by year';
-    displayName: 'Meeting Schedule';
+    displayName: 'News & Events \u2013 Meeting Schedule';
     pluralName: 'meeting-schedules';
     singularName: 'meeting-schedule';
   };
@@ -1063,7 +1095,7 @@ export interface ApiMemberOrganizationMemberOrganization
   collectionName: 'member_organizations';
   info: {
     description: 'NFA membership entries (Core Members and Stakeholders)';
-    displayName: 'Member Organization';
+    displayName: 'Governance \u2013 Member Organizations';
     pluralName: 'member-organizations';
     singularName: 'member-organization';
   };
@@ -1105,7 +1137,7 @@ export interface ApiNewsEventNewsEvent extends Struct.CollectionTypeSchema {
   collectionName: 'news_events';
   info: {
     description: 'News articles and project events';
-    displayName: 'News & Event';
+    displayName: 'News & Events \u2013 Articles';
     pluralName: 'news-events';
     singularName: 'news-event';
   };
@@ -1156,75 +1188,11 @@ export interface ApiNewsEventNewsEvent extends Struct.CollectionTypeSchema {
   };
 }
 
-export interface ApiPageSettingPageSetting extends Struct.CollectionTypeSchema {
-  collectionName: 'page_settings';
-  info: {
-    description: 'Hero images and settings for individual pages';
-    displayName: 'Page Setting';
-    pluralName: 'page-settings';
-    singularName: 'page-setting';
-  };
-  options: {
-    draftAndPublish: true;
-  };
-  pluginOptions: {
-    i18n: {
-      localized: true;
-    };
-  };
-  attributes: {
-    createdAt: Schema.Attribute.DateTime;
-    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
-      Schema.Attribute.Private;
-    hero_description: Schema.Attribute.Text &
-      Schema.Attribute.SetPluginOptions<{
-        i18n: {
-          localized: true;
-        };
-      }>;
-    hero_image: Schema.Attribute.Media<'images'> &
-      Schema.Attribute.SetPluginOptions<{
-        i18n: {
-          localized: false;
-        };
-      }>;
-    hero_title: Schema.Attribute.String &
-      Schema.Attribute.SetPluginOptions<{
-        i18n: {
-          localized: true;
-        };
-      }>;
-    locale: Schema.Attribute.String;
-    localizations: Schema.Attribute.Relation<
-      'oneToMany',
-      'api::page-setting.page-setting'
-    >;
-    page_key: Schema.Attribute.Enumeration<
-      [
-        'initiatives',
-        'partners',
-        'news',
-        'faq',
-        'guidelines',
-        'contact',
-        'governance',
-        'secretariat',
-      ]
-    > &
-      Schema.Attribute.Required &
-      Schema.Attribute.Unique;
-    publishedAt: Schema.Attribute.DateTime;
-    updatedAt: Schema.Attribute.DateTime;
-    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
-      Schema.Attribute.Private;
-  };
-}
-
 export interface ApiPartnerPartner extends Struct.CollectionTypeSchema {
   collectionName: 'partners';
   info: {
     description: 'Project partner organisations';
-    displayName: 'Partner';
+    displayName: 'Partners \u2013 Partner Organizations';
     pluralName: 'partners';
     singularName: 'partner';
   };
@@ -1279,7 +1247,7 @@ export interface ApiPrivacyPolicyPrivacyPolicy extends Struct.SingleTypeSchema {
   collectionName: 'privacy_policy';
   info: {
     description: 'Privacy Policy page content';
-    displayName: 'Privacy Policy';
+    displayName: 'Site \u2013 Privacy Policy';
     pluralName: 'privacy-policies';
     singularName: 'privacy-policy';
   };
@@ -1326,8 +1294,8 @@ export interface ApiPrivacyPolicyPrivacyPolicy extends Struct.SingleTypeSchema {
 export interface ApiProjectProject extends Struct.CollectionTypeSchema {
   collectionName: 'projects';
   info: {
-    description: 'NFA projects and strategic initiatives';
-    displayName: 'Project & Initiative';
+    description: 'NFA projects and strategic initiatives shown on the Initiatives page';
+    displayName: 'Initiatives \u2013 Projects';
     pluralName: 'projects';
     singularName: 'project';
   };
@@ -1354,7 +1322,58 @@ export interface ApiProjectProject extends Struct.CollectionTypeSchema {
     createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
     description: Schema.Attribute.RichText & Schema.Attribute.Required;
+    highlights: Schema.Attribute.Component<'shared.bullet-point', true>;
+    icon: Schema.Attribute.Enumeration<
+      [
+        'factory',
+        'home',
+        'map-pin',
+        'users',
+        'wheat',
+        'sun',
+        'droplet',
+        'box',
+        'sparkles',
+        'scale',
+        'handshake',
+        'bar-chart',
+        'clipboard',
+        'microscope',
+        'settings',
+        'graduation-cap',
+        'scroll-text',
+        'newspaper',
+        'calendar',
+        'megaphone',
+        'globe',
+        'landmark',
+        'hospital',
+        'heart-handshake',
+        'stethoscope',
+        'gem',
+        'trending-up',
+        'wrench',
+        'file',
+        'search',
+        'mail',
+        'clock',
+        'truck',
+        'activity',
+        'check-circle',
+        'shield',
+        'monitor',
+        'file-text',
+        'help-circle',
+        'arrow-right',
+        'zap',
+        'phone',
+        'shield-check',
+        'heart-pulse',
+      ]
+    > &
+      Schema.Attribute.DefaultTo<'trending-up'>;
     image: Schema.Attribute.Media<'images'>;
+    is_active: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<true>;
     is_featured: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<false>;
     locale: Schema.Attribute.String;
     localizations: Schema.Attribute.Relation<
@@ -1383,7 +1402,7 @@ export interface ApiQuoteQuote extends Struct.CollectionTypeSchema {
   collectionName: 'quotes';
   info: {
     description: 'Featured quotes and testimonials';
-    displayName: 'Quote';
+    displayName: 'Home \u2013 Featured Quote';
     pluralName: 'quotes';
     singularName: 'quote';
   };
@@ -1448,7 +1467,7 @@ export interface ApiStatisticStatistic extends Struct.CollectionTypeSchema {
   collectionName: 'statistics';
   info: {
     description: 'Key statistics and metrics for NFA';
-    displayName: 'Statistic';
+    displayName: 'Home & About \u2013 Nutrition Statistics';
     pluralName: 'statistics';
     singularName: 'statistic';
   };
@@ -1500,7 +1519,7 @@ export interface ApiSubscriberSubscriber extends Struct.CollectionTypeSchema {
   collectionName: 'subscribers';
   info: {
     description: 'Newsletter subscribers';
-    displayName: 'Subscriber';
+    displayName: 'Newsletter \u2013 Subscribers';
     pluralName: 'subscribers';
     singularName: 'subscriber';
   };
@@ -1536,7 +1555,7 @@ export interface ApiTeamMemberTeamMember extends Struct.CollectionTypeSchema {
   collectionName: 'team_members';
   info: {
     description: 'NFP/WFP Leadership and Focal Points';
-    displayName: 'Team Member';
+    displayName: 'Secretariat \u2013 Team Members';
     pluralName: 'team-members';
     singularName: 'team-member';
   };
@@ -2092,6 +2111,7 @@ declare module '@strapi/strapi' {
       'api::compliance-report.compliance-report': ApiComplianceReportComplianceReport;
       'api::contact-message.contact-message': ApiContactMessageContactMessage;
       'api::contact-page.contact-page': ApiContactPageContactPage;
+      'api::faq.faq': ApiFaqFaq;
       'api::global-setting.global-setting': ApiGlobalSettingGlobalSetting;
       'api::governance-representative.governance-representative': ApiGovernanceRepresentativeGovernanceRepresentative;
       'api::guideline-document.guideline-document': ApiGuidelineDocumentGuidelineDocument;
@@ -2100,7 +2120,6 @@ declare module '@strapi/strapi' {
       'api::meeting-schedule.meeting-schedule': ApiMeetingScheduleMeetingSchedule;
       'api::member-organization.member-organization': ApiMemberOrganizationMemberOrganization;
       'api::news-event.news-event': ApiNewsEventNewsEvent;
-      'api::page-setting.page-setting': ApiPageSettingPageSetting;
       'api::partner.partner': ApiPartnerPartner;
       'api::privacy-policy.privacy-policy': ApiPrivacyPolicyPrivacyPolicy;
       'api::project.project': ApiProjectProject;

@@ -4,7 +4,7 @@
     "info": {
         "singularName": "meeting-schedule",
         "pluralName": "meeting-schedules",
-        "displayName": "Meeting Schedule",
+        "displayName": "News & Events – Meeting Schedule",
         "description": "NFA biannual meeting host rotation, by year"
     },
     "options": {

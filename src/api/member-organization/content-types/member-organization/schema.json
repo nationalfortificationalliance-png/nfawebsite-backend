@@ -4,7 +4,7 @@
     "info": {
         "singularName": "member-organization",
         "pluralName": "member-organizations",
-        "displayName": "Member Organization",
+        "displayName": "Governance – Member Organizations",
         "description": "NFA membership entries (Core Members and Stakeholders)"
     },
     "options": {
