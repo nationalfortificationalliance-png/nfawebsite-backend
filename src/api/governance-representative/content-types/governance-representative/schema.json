@@ -99,6 +99,9 @@
         "is_active": {
             "type": "boolean",
             "default": true
+        },
+        "last_updated": {
+            "type": "date"
         }
     }
 }

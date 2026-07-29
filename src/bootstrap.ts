@@ -40,6 +40,7 @@ const bootstrap = async ({ strapi }: { strapi: Core.Strapi }) => {
     const singleTypes = [
         'api::about-page.about-page',
         'api::global-setting.global-setting',
+        'api::privacy-policy.privacy-policy',
     ];
 
     // Helper function to create/enable permission
@@ -114,6 +115,10 @@ const bootstrap = async ({ strapi }: { strapi: Core.Strapi }) => {
     // Seed real governance representative profiles (idempotent, runs in all environments)
     await seedGovernanceRepresentatives(strapi);
 
+    // Seed a placeholder Privacy Policy so the page has content in every environment,
+    // including production — real legal copy will replace this later.
+    await seedPrivacyPolicy(strapi);
+
     // Seed sample data if environment is development and DB is empty
     if (process.env.NODE_ENV === 'development') {
         await seedSampleData(strapi);
@@ -149,6 +154,34 @@ async function uploadLocalImage(strapi: Core.Strapi, fileName: string) {
     return uploaded;
 }
 
+async function seedPrivacyPolicy(strapi: Core.Strapi) {
+    const uid = 'api::privacy-policy.privacy-policy';
+
+    const existing = await strapi.entityService.findMany(uid, {});
+    if (existing && Object.keys(existing).length > 0) {
+        return;
+    }
+
+    await strapi.entityService.create(uid, {
+        data: {
+            title: 'Privacy Policy',
+            last_updated: new Date().toISOString().slice(0, 10),
+            body:
+                '<p><em>This is placeholder content. The National Fortification Alliance\'s full Privacy Policy is being finalised and will replace this text.</em></p>' +
+                '<h2>Overview</h2>' +
+                '<p>The National Fortification Alliance (NFA) respects your privacy and is committed to protecting any personal information you share with us through this website, including via our contact and subscription forms.</p>' +
+                '<h2>Information We Collect</h2>' +
+                '<p>We may collect basic contact details (such as name, email address, and phone number) when you voluntarily submit them through forms on this site.</p>' +
+                '<h2>How We Use Information</h2>' +
+                '<p>Information submitted to us is used solely to respond to enquiries, share updates you have requested, and improve our services. We do not sell or rent personal information to third parties.</p>' +
+                '<h2>Contact Us</h2>' +
+                '<p>If you have questions about this policy, please reach out via the Contact page.</p>',
+            publishedAt: new Date(),
+        },
+    });
+    console.log('✅ Privacy policy placeholder seeded');
+}
+
 async function seedGovernanceRepresentatives(strapi: Core.Strapi) {
     const uid = 'api::governance-representative.governance-representative';
 
@@ -177,6 +210,7 @@ async function seedGovernanceRepresentatives(strapi: Core.Strapi) {
             ]),
             order: 1,
             is_active: true,
+            last_updated: '2026-07-29',
             publishedAt: new Date(),
         },
         {
@@ -200,6 +234,7 @@ async function seedGovernanceRepresentatives(strapi: Core.Strapi) {
             ]),
             order: 2,
             is_active: true,
+            last_updated: '2026-07-29',
             publishedAt: new Date(),
         },
         {
@@ -223,6 +258,7 @@ async function seedGovernanceRepresentatives(strapi: Core.Strapi) {
             ]),
             order: 3,
             is_active: true,
+            last_updated: '2026-07-29',
             publishedAt: new Date(),
         },
         {
@@ -244,44 +280,7 @@ async function seedGovernanceRepresentatives(strapi: Core.Strapi) {
             ]),
             order: 4,
             is_active: true,
-            publishedAt: new Date(),
-        },
-        {
-            name: '',
-            title: '',
-            organization_name: 'Federal Ministry of Health and Social Welfare (FMOHSW)',
-            organization_short_name: 'FMOHSW',
-            organization_key: 'FMOHSW',
-            bio: '',
-            organization_profile: '',
-            key_contributions: bullets([
-                'Nutrition policy development',
-                'Advocate for an enabling environment to promote local production of micronutrients in Nigeria',
-                'Support for NFA coordination and activities',
-                'Advocacy activities with relevant bodies in the area of food fortification in Nigeria',
-                'Provide support for NFA meetings',
-            ]),
-            order: 5,
-            is_active: true,
-            publishedAt: new Date(),
-        },
-        {
-            name: '',
-            title: '',
-            organization_name: 'Development Partners',
-            organization_short_name: '',
-            organization_key: 'Development Partners',
-            bio: '',
-            organization_profile: '',
-            key_contributions: bullets([
-                'Technical assistance',
-                'Capacity building',
-                'Laboratory strengthening',
-                'Financial support',
-                'Public awareness creation',
-            ]),
-            order: 6,
-            is_active: true,
+            last_updated: '2026-07-29',
             publishedAt: new Date(),
         },
     ];
@@ -316,6 +315,18 @@ async function seedGovernanceRepresentatives(strapi: Core.Strapi) {
             data: { ...rep, organization_logo } as any,
         });
     }
+
+    // Remove placeholder reps (no name) for orgs no longer displayed on the Governance page.
+    const placeholders = await strapi.db.query(uid).findMany({
+        where: { organization_key: { $in: ['FMOHSW', 'Development Partners'] }, name: '' },
+    }) as any[];
+    for (const placeholder of placeholders) {
+        await strapi.documents(uid).delete({ documentId: placeholder.documentId });
+    }
+    if (placeholders.length > 0) {
+        console.log(`✅ Removed ${placeholders.length} placeholder governance representative(s)`);
+    }
+
     console.log('✅ Governance representative profiles seeded');
 }
 
