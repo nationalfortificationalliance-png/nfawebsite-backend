@@ -26,7 +26,12 @@ const config: Core.Config.Middlewares = [
       // any Vercel preview deployment subdomain.
       origin: (ctx: { get: (header: string) => string }) => {
         const requestOrigin = ctx.get('Origin');
-        const allowedExact = ['http://localhost:3000', 'http://localhost:1337'];
+        const allowedExact = [
+          'http://localhost:3000',
+          'http://localhost:1337',
+          'https://nationalfortificationalliance.org.ng',
+          'https://www.nationalfortificationalliance.org.ng',
+        ];
         if (allowedExact.includes(requestOrigin) || /^https:\/\/[a-z0-9-]+\.vercel\.app$/.test(requestOrigin)) {
           return [requestOrigin];
         }
