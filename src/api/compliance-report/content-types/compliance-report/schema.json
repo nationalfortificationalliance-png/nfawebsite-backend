@@ -1,0 +1,54 @@
+{
+    "kind": "collectionType",
+    "collectionName": "compliance_reports",
+    "info": {
+        "singularName": "compliance-report",
+        "pluralName": "compliance-reports",
+        "displayName": "Compliance Report",
+        "description": "Annual national fortification compliance figures, by year"
+    },
+    "options": {
+        "draftAndPublish": true
+    },
+    "pluginOptions": {
+        "i18n": {
+            "localized": true
+        }
+    },
+    "attributes": {
+        "year": {
+            "type": "string",
+            "required": true,
+            "maxLength": 20
+        },
+        "national_compliance": {
+            "type": "string",
+            "required": true,
+            "maxLength": 20
+        },
+        "salt_compliance": {
+            "type": "string",
+            "maxLength": 20
+        },
+        "veg_oil_compliance": {
+            "type": "string",
+            "maxLength": 20
+        },
+        "flour_compliance": {
+            "type": "string",
+            "maxLength": 20
+        },
+        "source": {
+            "type": "string",
+            "maxLength": 255
+        },
+        "is_active": {
+            "type": "boolean",
+            "default": true
+        },
+        "order": {
+            "type": "integer",
+            "default": 0
+        }
+    }
+}

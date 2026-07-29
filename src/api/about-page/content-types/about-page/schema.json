@@ -60,11 +60,6 @@
             "repeatable": true,
             "component": "about.challenge-stat"
         },
-        "key_stats": {
-            "type": "component",
-            "repeatable": true,
-            "component": "about.key-stat"
-        },
         "timeline_items": {
             "type": "component",
             "repeatable": true,
