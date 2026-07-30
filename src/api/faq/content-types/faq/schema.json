@@ -36,6 +36,11 @@
         "is_active": {
             "type": "boolean",
             "default": true
+        },
+        "view_count": {
+            "type": "integer",
+            "default": 0,
+            "min": 0
         }
     }
 }
