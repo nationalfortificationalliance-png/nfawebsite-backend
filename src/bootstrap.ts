@@ -28,6 +28,7 @@ const bootstrap = async ({ strapi }: { strapi: Core.Strapi }) => {
         'api::member-organization.member-organization',
         'api::compliance-report.compliance-report',
         'api::faq.faq',
+        'api::report.report',
     ];
 
     // Form-submission types: the public may create entries but must never
