@@ -56,6 +56,43 @@
         "is_featured": {
             "type": "boolean",
             "default": false
+        },
+        "document_type": {
+            "type": "enumeration",
+            "enum": [
+                "Guideline",
+                "Standard",
+                "Regulation",
+                "Manual",
+                "SOP",
+                "Technical Note",
+                "Policy Document"
+            ]
+        },
+        "food_vehicles": {
+            "type": "string",
+            "maxLength": 200,
+            "description": "Comma-separated, e.g. \"Salt, Vegetable Oil\""
+        },
+        "agency": {
+            "type": "enumeration",
+            "enum": [
+                "NAFDAC",
+                "SON",
+                "FCCPC",
+                "FMoH&SW",
+                "NFA Secretariat",
+                "Development Partners"
+            ]
+        },
+        "status": {
+            "type": "enumeration",
+            "enum": [
+                "Current",
+                "Revised",
+                "Archived"
+            ],
+            "default": "Current"
         }
     }
 }

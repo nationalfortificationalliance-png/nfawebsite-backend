@@ -925,6 +925,16 @@ export interface ApiGuidelineDocumentGuidelineDocument
     };
   };
   attributes: {
+    agency: Schema.Attribute.Enumeration<
+      [
+        'NAFDAC',
+        'SON',
+        'FCCPC',
+        'FMoH&SW',
+        'NFA Secretariat',
+        'Development Partners',
+      ]
+    >;
     category: Schema.Attribute.Enumeration<
       ['General', 'Logistics', 'Nutrition', 'Reports', 'Other']
     > &
@@ -937,8 +947,23 @@ export interface ApiGuidelineDocumentGuidelineDocument
       Schema.Attribute.SetMinMaxLength<{
         maxLength: 600;
       }>;
+    document_type: Schema.Attribute.Enumeration<
+      [
+        'Guideline',
+        'Standard',
+        'Regulation',
+        'Manual',
+        'SOP',
+        'Technical Note',
+        'Policy Document',
+      ]
+    >;
     file: Schema.Attribute.Media<'files' | 'images' | 'videos'>;
     file_size: Schema.Attribute.String;
+    food_vehicles: Schema.Attribute.String &
+      Schema.Attribute.SetMinMaxLength<{
+        maxLength: 200;
+      }>;
     is_featured: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<false>;
     locale: Schema.Attribute.String;
     localizations: Schema.Attribute.Relation<
@@ -947,6 +972,8 @@ export interface ApiGuidelineDocumentGuidelineDocument
     >;
     published_date: Schema.Attribute.Date;
     publishedAt: Schema.Attribute.DateTime;
+    status: Schema.Attribute.Enumeration<['Current', 'Revised', 'Archived']> &
+      Schema.Attribute.DefaultTo<'Current'>;
     title: Schema.Attribute.String &
       Schema.Attribute.Required &
       Schema.Attribute.SetMinMaxLength<{

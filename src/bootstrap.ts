@@ -988,6 +988,10 @@ const FIELD_HINTS: Record<string, Record<string, string>> = {
         published_date: 'Date the document was published — used for sorting, newest first.',
         file_size: "File size shown next to the download link, e.g. '2.4 MB'.",
         is_featured: 'Highlight this document at the top of its category.',
+        document_type: 'What kind of document this is (Guideline, Standard, Regulation, etc.) — used as a filter on the Resources page.',
+        food_vehicles: 'Which fortified foods this document relates to, comma-separated, e.g. "Salt, Vegetable Oil" — used as a filter.',
+        agency: 'Which agency published or owns this document — used as a filter.',
+        status: 'Whether this document is the current version, a revision, or archived — used as a filter.',
     },
     'api::industry-challenge.industry-challenge': {
         text: 'Description of the challenge, shown as a single bullet point.',
