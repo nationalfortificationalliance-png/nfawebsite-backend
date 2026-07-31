@@ -1,0 +1,18 @@
+{
+    "collectionName": "components_shared_member_organizations",
+    "info": {
+        "displayName": "Member Organization",
+        "description": "A single named company/organization participating within a sector partner (e.g. a Flour Miller under the 'Flour Millers' sector)"
+    },
+    "options": {},
+    "attributes": {
+        "name": {
+            "type": "string",
+            "required": true,
+            "maxLength": 150
+        },
+        "website_url": {
+            "type": "string"
+        }
+    }
+}

@@ -23,6 +23,22 @@ export interface SharedBulletPoint extends Struct.ComponentSchema {
   };
 }
 
+export interface SharedMemberOrganization extends Struct.ComponentSchema {
+  collectionName: 'components_shared_member_organizations';
+  info: {
+    description: "A single named company/organization participating within a sector partner (e.g. a Flour Miller under the 'Flour Millers' sector)";
+    displayName: 'Member Organization';
+  };
+  attributes: {
+    name: Schema.Attribute.String &
+      Schema.Attribute.Required &
+      Schema.Attribute.SetMinMaxLength<{
+        maxLength: 150;
+      }>;
+    website_url: Schema.Attribute.String;
+  };
+}
+
 export interface SharedSeo extends Struct.ComponentSchema {
   collectionName: 'components_shared_seos';
   info: {
@@ -47,6 +63,7 @@ declare module '@strapi/strapi' {
     export interface ComponentSchemas {
       'about.timeline-item': AboutTimelineItem;
       'shared.bullet-point': SharedBulletPoint;
+      'shared.member-organization': SharedMemberOrganization;
       'shared.seo': SharedSeo;
     }
   }
