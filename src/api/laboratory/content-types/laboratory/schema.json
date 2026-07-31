@@ -47,6 +47,12 @@
             "type": "boolean",
             "default": true
         },
+        "latitude": {
+            "type": "decimal"
+        },
+        "longitude": {
+            "type": "decimal"
+        },
         "order": {
             "type": "integer",
             "default": 0

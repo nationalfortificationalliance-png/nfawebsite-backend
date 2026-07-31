@@ -1009,6 +1009,8 @@ const FIELD_HINTS: Record<string, Record<string, string>> = {
         accreditation: 'Accreditation body/certificate reference, if any.',
         is_active: 'Turn off to hide this laboratory without deleting it.',
         order: 'Controls display order (lower numbers show first).',
+        latitude: 'Approximate latitude for the map pin (decimal degrees, e.g. 6.5244).',
+        longitude: 'Approximate longitude for the map pin (decimal degrees, e.g. 3.3792).',
     },
     'api::meeting-schedule.meeting-schedule': {
         year: 'The year this meeting schedule covers, e.g. 2026.',

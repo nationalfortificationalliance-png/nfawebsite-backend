@@ -1063,6 +1063,7 @@ export interface ApiLaboratoryLaboratory extends Struct.CollectionTypeSchema {
       Schema.Attribute.Private;
     email: Schema.Attribute.Email;
     is_active: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<true>;
+    latitude: Schema.Attribute.Decimal;
     locale: Schema.Attribute.String;
     localizations: Schema.Attribute.Relation<
       'oneToMany',
@@ -1073,6 +1074,7 @@ export interface ApiLaboratoryLaboratory extends Struct.CollectionTypeSchema {
       Schema.Attribute.SetMinMaxLength<{
         maxLength: 100;
       }>;
+    longitude: Schema.Attribute.Decimal;
     name: Schema.Attribute.String &
       Schema.Attribute.Required &
       Schema.Attribute.SetMinMaxLength<{
