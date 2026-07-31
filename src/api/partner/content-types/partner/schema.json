@@ -36,6 +36,10 @@
             "type": "text",
             "maxLength": 600
         },
+        "role_in_alliance": {
+            "type": "string",
+            "maxLength": 200
+        },
         "order": {
             "type": "integer",
             "default": 0

@@ -1244,6 +1244,10 @@ export interface ApiPartnerPartner extends Struct.CollectionTypeSchema {
     > &
       Schema.Attribute.DefaultTo<'government'>;
     publishedAt: Schema.Attribute.DateTime;
+    role_in_alliance: Schema.Attribute.String &
+      Schema.Attribute.SetMinMaxLength<{
+        maxLength: 200;
+      }>;
     updatedAt: Schema.Attribute.DateTime;
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
