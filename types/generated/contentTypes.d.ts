@@ -528,8 +528,8 @@ export interface ApiComplianceReportComplianceReport
   extends Struct.CollectionTypeSchema {
   collectionName: 'compliance_reports';
   info: {
-    description: 'Annual national fortification compliance figures, by year';
-    displayName: 'News & Events \u2013 Compliance Reports';
+    description: 'Annual national fortification compliance figures, by year, for the Reports & Data compliance dashboard';
+    displayName: 'Reports & Data \u2013 Compliance Dashboard';
     pluralName: 'compliance-reports';
     singularName: 'compliance-report';
   };
@@ -542,6 +542,10 @@ export interface ApiComplianceReportComplianceReport
     };
   };
   attributes: {
+    bouillon_compliance: Schema.Attribute.String &
+      Schema.Attribute.SetMinMaxLength<{
+        maxLength: 20;
+      }>;
     createdAt: Schema.Attribute.DateTime;
     createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
@@ -562,6 +566,10 @@ export interface ApiComplianceReportComplianceReport
       }>;
     order: Schema.Attribute.Integer & Schema.Attribute.DefaultTo<0>;
     publishedAt: Schema.Attribute.DateTime;
+    rice_compliance: Schema.Attribute.String &
+      Schema.Attribute.SetMinMaxLength<{
+        maxLength: 20;
+      }>;
     salt_compliance: Schema.Attribute.String &
       Schema.Attribute.SetMinMaxLength<{
         maxLength: 20;
@@ -569,6 +577,10 @@ export interface ApiComplianceReportComplianceReport
     source: Schema.Attribute.String &
       Schema.Attribute.SetMinMaxLength<{
         maxLength: 255;
+      }>;
+    sugar_compliance: Schema.Attribute.String &
+      Schema.Attribute.SetMinMaxLength<{
+        maxLength: 20;
       }>;
     updatedAt: Schema.Attribute.DateTime;
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
@@ -1489,6 +1501,89 @@ export interface ApiQuoteQuote extends Struct.CollectionTypeSchema {
   };
 }
 
+export interface ApiReportReport extends Struct.CollectionTypeSchema {
+  collectionName: 'reports';
+  info: {
+    description: 'Compliance, surveillance, research, and evaluation reports for the Reports & Data repository';
+    displayName: 'Reports & Data \u2013 Documents';
+    pluralName: 'reports';
+    singularName: 'report';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  pluginOptions: {
+    i18n: {
+      localized: true;
+    };
+  };
+  attributes: {
+    agency: Schema.Attribute.Enumeration<
+      [
+        'NAFDAC',
+        'SON',
+        'FCCPC',
+        'FMoH&SW',
+        'NFA Secretariat',
+        'Development Partners',
+      ]
+    > &
+      Schema.Attribute.Required;
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    description: Schema.Attribute.Text &
+      Schema.Attribute.SetMinMaxLength<{
+        maxLength: 600;
+      }>;
+    download_count: Schema.Attribute.Integer & Schema.Attribute.DefaultTo<0>;
+    file: Schema.Attribute.Media<'files'>;
+    file_size: Schema.Attribute.String &
+      Schema.Attribute.SetMinMaxLength<{
+        maxLength: 20;
+      }>;
+    food_vehicles: Schema.Attribute.String &
+      Schema.Attribute.SetMinMaxLength<{
+        maxLength: 200;
+      }>;
+    is_featured: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<false>;
+    locale: Schema.Attribute.String;
+    localizations: Schema.Attribute.Relation<'oneToMany', 'api::report.report'>;
+    order: Schema.Attribute.Integer & Schema.Attribute.DefaultTo<0>;
+    published_date: Schema.Attribute.Date;
+    publishedAt: Schema.Attribute.DateTime;
+    report_type: Schema.Attribute.Enumeration<
+      [
+        'Annual Report',
+        'Quarterly Report',
+        'Compliance Report',
+        'Surveillance Report',
+        'Laboratory Report',
+        'Evaluation Report',
+        'Policy Brief',
+      ]
+    > &
+      Schema.Attribute.Required;
+    title: Schema.Attribute.String &
+      Schema.Attribute.Required &
+      Schema.Attribute.SetMinMaxLength<{
+        maxLength: 255;
+      }>;
+    topics: Schema.Attribute.String &
+      Schema.Attribute.SetMinMaxLength<{
+        maxLength: 300;
+      }>;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    year: Schema.Attribute.String &
+      Schema.Attribute.Required &
+      Schema.Attribute.SetMinMaxLength<{
+        maxLength: 20;
+      }>;
+  };
+}
+
 export interface ApiStatisticStatistic extends Struct.CollectionTypeSchema {
   collectionName: 'statistics';
   info: {
@@ -2150,6 +2245,7 @@ declare module '@strapi/strapi' {
       'api::privacy-policy.privacy-policy': ApiPrivacyPolicyPrivacyPolicy;
       'api::project.project': ApiProjectProject;
       'api::quote.quote': ApiQuoteQuote;
+      'api::report.report': ApiReportReport;
       'api::statistic.statistic': ApiStatisticStatistic;
       'api::subscriber.subscriber': ApiSubscriberSubscriber;
       'api::team-member.team-member': ApiTeamMemberTeamMember;

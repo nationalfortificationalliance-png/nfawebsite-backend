@@ -4,8 +4,8 @@
     "info": {
         "singularName": "compliance-report",
         "pluralName": "compliance-reports",
-        "displayName": "News & Events – Compliance Reports",
-        "description": "Annual national fortification compliance figures, by year"
+        "displayName": "Reports & Data – Compliance Dashboard",
+        "description": "Annual national fortification compliance figures, by year, for the Reports & Data compliance dashboard"
     },
     "options": {
         "draftAndPublish": true
@@ -35,6 +35,18 @@
             "maxLength": 20
         },
         "flour_compliance": {
+            "type": "string",
+            "maxLength": 20
+        },
+        "sugar_compliance": {
+            "type": "string",
+            "maxLength": 20
+        },
+        "rice_compliance": {
+            "type": "string",
+            "maxLength": 20
+        },
+        "bouillon_compliance": {
             "type": "string",
             "maxLength": 20
         },
