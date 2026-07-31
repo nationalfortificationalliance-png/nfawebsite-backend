@@ -1,0 +1,35 @@
+{
+    "kind": "collectionType",
+    "collectionName": "newsletter_broadcasts",
+    "info": {
+        "singularName": "newsletter-broadcast",
+        "pluralName": "newsletter-broadcasts",
+        "displayName": "Newsletter – Broadcasts",
+        "description": "One-off newsletter emails sent to all active subscribers when published"
+    },
+    "options": {
+        "draftAndPublish": true
+    },
+    "attributes": {
+        "subject": {
+            "type": "string",
+            "required": true,
+            "maxLength": 200
+        },
+        "body": {
+            "type": "richtext",
+            "required": true
+        },
+        "sent": {
+            "type": "boolean",
+            "default": false
+        },
+        "sent_at": {
+            "type": "datetime"
+        },
+        "recipient_count": {
+            "type": "integer",
+            "default": 0
+        }
+    }
+}

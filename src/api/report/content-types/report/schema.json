@@ -91,6 +91,14 @@
         "order": {
             "type": "integer",
             "default": 0
+        },
+        "notify_subscribers": {
+            "type": "boolean",
+            "default": false
+        },
+        "subscribers_notified": {
+            "type": "boolean",
+            "default": false
         }
     }
 }

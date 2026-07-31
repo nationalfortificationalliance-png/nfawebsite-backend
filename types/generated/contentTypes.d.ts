@@ -1222,14 +1222,56 @@ export interface ApiNewsEventNewsEvent extends Struct.CollectionTypeSchema {
       'oneToMany',
       'api::news-event.news-event'
     >;
+    notify_subscribers: Schema.Attribute.Boolean &
+      Schema.Attribute.DefaultTo<false>;
     publishedAt: Schema.Attribute.DateTime;
     seo: Schema.Attribute.Component<'shared.seo', false>;
     slug: Schema.Attribute.UID<'title'> & Schema.Attribute.Required;
+    subscribers_notified: Schema.Attribute.Boolean &
+      Schema.Attribute.DefaultTo<false>;
     tags: Schema.Attribute.String;
     title: Schema.Attribute.String &
       Schema.Attribute.Required &
       Schema.Attribute.SetMinMaxLength<{
         maxLength: 255;
+      }>;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+  };
+}
+
+export interface ApiNewsletterBroadcastNewsletterBroadcast
+  extends Struct.CollectionTypeSchema {
+  collectionName: 'newsletter_broadcasts';
+  info: {
+    description: 'One-off newsletter emails sent to all active subscribers when published';
+    displayName: 'Newsletter \u2013 Broadcasts';
+    pluralName: 'newsletter-broadcasts';
+    singularName: 'newsletter-broadcast';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  attributes: {
+    body: Schema.Attribute.RichText & Schema.Attribute.Required;
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::newsletter-broadcast.newsletter-broadcast'
+    > &
+      Schema.Attribute.Private;
+    publishedAt: Schema.Attribute.DateTime;
+    recipient_count: Schema.Attribute.Integer & Schema.Attribute.DefaultTo<0>;
+    sent: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<false>;
+    sent_at: Schema.Attribute.DateTime;
+    subject: Schema.Attribute.String &
+      Schema.Attribute.Required &
+      Schema.Attribute.SetMinMaxLength<{
+        maxLength: 200;
       }>;
     updatedAt: Schema.Attribute.DateTime;
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
@@ -1578,6 +1620,8 @@ export interface ApiReportReport extends Struct.CollectionTypeSchema {
     is_featured: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<false>;
     locale: Schema.Attribute.String;
     localizations: Schema.Attribute.Relation<'oneToMany', 'api::report.report'>;
+    notify_subscribers: Schema.Attribute.Boolean &
+      Schema.Attribute.DefaultTo<false>;
     order: Schema.Attribute.Integer & Schema.Attribute.DefaultTo<0>;
     published_date: Schema.Attribute.Date;
     publishedAt: Schema.Attribute.DateTime;
@@ -1593,6 +1637,8 @@ export interface ApiReportReport extends Struct.CollectionTypeSchema {
       ]
     > &
       Schema.Attribute.Required;
+    subscribers_notified: Schema.Attribute.Boolean &
+      Schema.Attribute.DefaultTo<false>;
     title: Schema.Attribute.String &
       Schema.Attribute.Required &
       Schema.Attribute.SetMinMaxLength<{
@@ -2270,6 +2316,7 @@ declare module '@strapi/strapi' {
       'api::meeting-schedule.meeting-schedule': ApiMeetingScheduleMeetingSchedule;
       'api::member-organization.member-organization': ApiMemberOrganizationMemberOrganization;
       'api::news-event.news-event': ApiNewsEventNewsEvent;
+      'api::newsletter-broadcast.newsletter-broadcast': ApiNewsletterBroadcastNewsletterBroadcast;
       'api::partner.partner': ApiPartnerPartner;
       'api::privacy-policy.privacy-policy': ApiPrivacyPolicyPrivacyPolicy;
       'api::project.project': ApiProjectProject;

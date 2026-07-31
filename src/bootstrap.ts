@@ -1,6 +1,7 @@
 import type { Core } from '@strapi/strapi';
 import fs from 'fs';
 import path from 'path';
+import { sendNewsItemNotification, sendReportNotification, sendBroadcast } from './utils/newsletter';
 
 const bootstrap = async ({ strapi }: { strapi: Core.Strapi }) => {
     // Set public role permissions for read-only access on all published content
@@ -135,6 +136,61 @@ const bootstrap = async ({ strapi }: { strapi: Core.Strapi }) => {
     // appears on the live site. Purely cosmetic — never hides or reorders
     // fields, only fills in the "description" hint text under each one.
     await configureContentManagerFieldHints(strapi);
+
+    // Newsletter: publishing an entry is the "send" trigger. News/Report items
+    // only send if the editor opted in via notify_subscribers (publishing an
+    // ordinary news item must never spam subscribers). Broadcasts always send
+    // on publish. Both are guarded by a "notified" flag so republishing/editing
+    // afterwards never re-sends.
+    strapi.eventHub.on('entry.publish', async (event: { uid: string; entry: Record<string, unknown> }) => {
+        const { uid, entry } = event;
+        try {
+            if (uid === 'api::news-event.news-event') {
+                if (entry.notify_subscribers && !entry.subscribers_notified) {
+                    const count = await sendNewsItemNotification(strapi, {
+                        title: entry.title as string,
+                        excerpt: entry.excerpt as string | undefined,
+                        slug: entry.slug as string,
+                        category: entry.category as string,
+                    });
+                    await strapi.documents('api::news-event.news-event').update({
+                        documentId: entry.documentId as string,
+                        data: { subscribers_notified: true },
+                        status: 'published',
+                    });
+                    strapi.log.info(`Newsletter: notified ${count} subscriber(s) about news item "${entry.title}".`);
+                }
+            } else if (uid === 'api::report.report') {
+                if (entry.notify_subscribers && !entry.subscribers_notified) {
+                    const count = await sendReportNotification(strapi, {
+                        title: entry.title as string,
+                        description: entry.description as string | undefined,
+                    });
+                    await strapi.documents('api::report.report').update({
+                        documentId: entry.documentId as string,
+                        data: { subscribers_notified: true },
+                        status: 'published',
+                    });
+                    strapi.log.info(`Newsletter: notified ${count} subscriber(s) about report "${entry.title}".`);
+                }
+            } else if (uid === 'api::newsletter-broadcast.newsletter-broadcast') {
+                if (!entry.sent) {
+                    const count = await sendBroadcast(strapi, {
+                        subject: entry.subject as string,
+                        body: entry.body as string,
+                    });
+                    await strapi.documents('api::newsletter-broadcast.newsletter-broadcast').update({
+                        documentId: entry.documentId as string,
+                        data: { sent: true, sent_at: new Date().toISOString(), recipient_count: count },
+                        status: 'published',
+                    });
+                    strapi.log.info(`Newsletter: broadcast "${entry.subject}" sent to ${count} subscriber(s).`);
+                }
+            }
+        } catch (err) {
+            strapi.log.error(`Newsletter send failed for ${uid}: ${(err as Error).message}`);
+        }
+    });
 };
 
 const ORG_LOGO_FILES: Record<string, string> = {
@@ -993,6 +1049,30 @@ const FIELD_HINTS: Record<string, Record<string, string>> = {
         agency: 'Which agency published or owns this document — used as a filter.',
         status: 'Whether this document is the current version, a revision, or archived — used as a filter.',
     },
+    'api::report.report': {
+        title: 'Title of the report as shown on the Reports & Data page.',
+        description: 'Short summary of what the report covers.',
+        file: 'The report file itself (PDF, Word, etc.) for visitors to download.',
+        year: 'The year this report covers, e.g. 2026.',
+        agency: 'Which agency published this report — used as a filter.',
+        report_type: 'What kind of report this is — used as a filter.',
+        food_vehicles: 'Which fortified foods this report relates to, comma-separated, e.g. "Salt, Vegetable Oil" — used as a filter.',
+        topics: 'Topics this report covers, comma-separated, e.g. "Compliance, Vitamin A" — used as a filter.',
+        published_date: 'Date the report was published — used for sorting, newest first.',
+        file_size: "File size shown next to the download link, e.g. '2.4 MB'.",
+        is_featured: 'Highlight this report at the top of the list.',
+        download_count: 'Number of times this report has been downloaded.',
+        order: 'Controls display order (lower numbers show first).',
+        notify_subscribers: 'Check this box, then Publish, to email newsletter subscribers about this report.',
+        subscribers_notified: 'Set automatically once the notification email has been sent. Do not edit.',
+    },
+    'api::newsletter-broadcast.newsletter-broadcast': {
+        subject: 'Email subject line sent to all active subscribers.',
+        body: 'Email content sent to all active subscribers.',
+        sent: 'Set automatically once this broadcast has been emailed. Do not edit.',
+        sent_at: 'Set automatically to the date/time this broadcast was sent. Do not edit.',
+        recipient_count: 'Set automatically to how many subscribers received this broadcast.',
+    },
     'api::industry-challenge.industry-challenge': {
         text: 'Description of the challenge, shown as a single bullet point.',
         category: 'Which group of challenges this belongs to on the Resources page.',
@@ -1039,6 +1119,8 @@ const FIELD_HINTS: Record<string, Record<string, string>> = {
         is_featured: 'Highlight this article at the top of the News page.',
         tags: 'Optional keywords, separated by commas, to help group related articles.',
         seo: 'Search engine title/description for this specific article.',
+        notify_subscribers: 'Check this box, then Publish, to email newsletter subscribers about this article.',
+        subscribers_notified: 'Set automatically once the notification email has been sent. Do not edit.',
     },
     'api::partner.partner': {
         name: 'Name of the partner organisation.',
