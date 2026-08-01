@@ -113,7 +113,7 @@ const bootstrap = async ({ strapi }: { strapi: Core.Strapi }) => {
         await revokePermission(contentType, 'findOne');
     }
 
-    console.log('✅ Public permissions configured for all NFA content types');
+    strapi.log.info('✅ Public permissions configured for all NFA content types');
 
     // Seed real governance representative profiles (idempotent, runs in all environments)
     await seedGovernanceRepresentatives(strapi);
@@ -247,7 +247,7 @@ async function seedPrivacyPolicy(strapi: Core.Strapi) {
             publishedAt: new Date(),
         },
     });
-    console.log('✅ Privacy policy placeholder seeded');
+    strapi.log.info('✅ Privacy policy placeholder seeded');
 }
 
 async function seedGovernanceRepresentatives(strapi: Core.Strapi) {
@@ -392,10 +392,10 @@ async function seedGovernanceRepresentatives(strapi: Core.Strapi) {
         await strapi.documents(uid).delete({ documentId: placeholder.documentId });
     }
     if (placeholders.length > 0) {
-        console.log(`✅ Removed ${placeholders.length} placeholder governance representative(s)`);
+        strapi.log.info(`✅ Removed ${placeholders.length} placeholder governance representative(s)`);
     }
 
-    console.log('✅ Governance representative profiles seeded');
+    strapi.log.info('✅ Governance representative profiles seeded');
 }
 
 async function seedAboutPage(strapi: Core.Strapi) {
@@ -419,7 +419,7 @@ async function seedAboutPage(strapi: Core.Strapi) {
                 publishedAt: new Date(),
             },
         });
-        console.log('✅ About page seeded');
+        strapi.log.info('✅ About page seeded');
     }
 
     // Backfill About Page stats/timeline sections (added after initial seed above,
@@ -459,7 +459,7 @@ async function seedAboutPage(strapi: Core.Strapi) {
         if (Object.keys(data).length > 0) {
             await strapi.documents('api::about-page.about-page').update({ documentId, data });
             await strapi.documents('api::about-page.about-page').publish({ documentId });
-            console.log('✅ About page stats/timeline backfilled');
+            strapi.log.info('✅ About page stats/timeline backfilled');
         }
     }
 }
@@ -484,7 +484,7 @@ async function seedSampleData(strapi: Core.Strapi) {
                 linkedin_url: 'https://linkedin.com/company/wfp-nigeria',
             },
         });
-        console.log('✅ Global settings seeded');
+        strapi.log.info('✅ Global settings seeded');
     }
 
     // Seed Approved Laboratories
@@ -508,7 +508,7 @@ async function seedSampleData(strapi: Core.Strapi) {
                 data: { ...lab, publishedAt: new Date() },
             });
         }
-        console.log('✅ Approved laboratories seeded');
+        strapi.log.info('✅ Approved laboratories seeded');
     }
 
     // Seed Meeting Schedule
@@ -527,7 +527,7 @@ async function seedSampleData(strapi: Core.Strapi) {
                 data: { ...meeting, publishedAt: new Date() },
             });
         }
-        console.log('✅ Meeting schedule seeded');
+        strapi.log.info('✅ Meeting schedule seeded');
     }
 
     // Seed Compliance Reports (relocated from About Page key_stats — updatable
@@ -549,7 +549,7 @@ async function seedSampleData(strapi: Core.Strapi) {
                 publishedAt: new Date(),
             },
         });
-        console.log('✅ Compliance report seeded');
+        strapi.log.info('✅ Compliance report seeded');
     }
 
     // Seed FAQs
@@ -598,7 +598,7 @@ async function seedSampleData(strapi: Core.Strapi) {
                 data: { ...faq, is_active: true, publishedAt: new Date() },
             });
         }
-        console.log('✅ FAQs seeded');
+        strapi.log.info('✅ FAQs seeded');
     }
 
     // Seed Initiatives (Project & Initiative content type, shown on the Initiatives page)
@@ -656,7 +656,7 @@ async function seedSampleData(strapi: Core.Strapi) {
                 data: { ...initiative, is_active: true, is_featured: true, publishedAt: new Date() } as any,
             });
         }
-        console.log('✅ Initiatives seeded');
+        strapi.log.info('✅ Initiatives seeded');
     }
 
     // Backfill: any project rows created before the is_active field existed
@@ -671,7 +671,7 @@ async function seedSampleData(strapi: Core.Strapi) {
         await strapi.documents('api::project.project').publish({ documentId: row.documentId });
     }
     if (inactiveProjectRows.length > 0) {
-        console.log(`✅ Backfilled is_active on ${inactiveProjectRows.length} existing initiative(s)`);
+        strapi.log.info(`✅ Backfilled is_active on ${inactiveProjectRows.length} existing initiative(s)`);
     }
 
     // Seed Industry Challenges
@@ -698,7 +698,7 @@ async function seedSampleData(strapi: Core.Strapi) {
                 data: { ...challengesData[i], order: i + 1, publishedAt: new Date() },
             });
         }
-        console.log('✅ Industry challenges seeded');
+        strapi.log.info('✅ Industry challenges seeded');
     } else {
         // Backfill category on rows created before the category field existed
         const challengeRows = await strapi.db.query('api::industry-challenge.industry-challenge').findMany({});
@@ -714,7 +714,7 @@ async function seedSampleData(strapi: Core.Strapi) {
                     await strapi.documents('api::industry-challenge.industry-challenge').publish({ documentId: row.documentId });
                 }
             }
-            console.log('✅ Industry challenge categories backfilled');
+            strapi.log.info('✅ Industry challenge categories backfilled');
         }
     }
 
@@ -748,7 +748,7 @@ async function seedSampleData(strapi: Core.Strapi) {
                 data: { ...rest, logo, order: i + 1, publishedAt: new Date() } as any,
             });
         }
-        console.log('✅ Member organizations seeded');
+        strapi.log.info('✅ Member organizations seeded');
     } else {
         // Backfill logo media on rows created before the logo field existed
         const memberRows = await strapi.db.query('api::member-organization.member-organization').findMany({
@@ -831,7 +831,7 @@ async function seedSampleData(strapi: Core.Strapi) {
         for (const article of newsData) {
             await strapi.entityService.create('api::news-event.news-event', { data: article as any });
         }
-        console.log('✅ News & Events seeded');
+        strapi.log.info('✅ News & Events seeded');
     }
 
     // Seed Guideline Documents
@@ -878,7 +878,7 @@ async function seedSampleData(strapi: Core.Strapi) {
         for (const doc of docsData) {
             await strapi.entityService.create('api::guideline-document.guideline-document', { data: doc as any });
         }
-        console.log('✅ Guideline documents seeded');
+        strapi.log.info('✅ Guideline documents seeded');
     }
 
     // Seed Partners
@@ -938,7 +938,7 @@ async function seedSampleData(strapi: Core.Strapi) {
         for (const partner of partnersData) {
             await strapi.entityService.create('api::partner.partner', { data: partner as any });
         }
-        console.log('✅ Partners seeded');
+        strapi.log.info('✅ Partners seeded');
     }
 }
 
@@ -1241,7 +1241,7 @@ async function configureContentManagerFieldHints(strapi: Core.Strapi) {
             strapi.log.warn(`Could not set admin field hints for ${uid}: ${(err as Error).message}`);
         }
     }
-    console.log('✅ Admin field descriptions configured');
+    strapi.log.info('✅ Admin field descriptions configured');
 }
 
 export default bootstrap;
