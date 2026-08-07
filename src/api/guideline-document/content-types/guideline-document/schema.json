@@ -35,6 +35,37 @@
                 "videos"
             ]
         },
+        "issuing_organization": {
+            "type": "relation",
+            "relation": "manyToOne",
+            "target": "api::member-organization.member-organization"
+        },
+        "access_type": {
+            "type": "enumeration",
+            "enum": [
+                "Download",
+                "Preview",
+                "External Link"
+            ],
+            "default": "Download"
+        },
+        "external_url": {
+            "type": "string",
+            "maxLength": 500
+        },
+        "reference_number": {
+            "type": "string",
+            "maxLength": 80
+        },
+        "resource_group": {
+            "type": "string",
+            "maxLength": 120
+        },
+        "publication_year": {
+            "type": "integer",
+            "min": 1900,
+            "max": 2100
+        },
         "category": {
             "type": "enumeration",
             "enum": [
@@ -66,7 +97,8 @@
                 "Manual",
                 "SOP",
                 "Technical Note",
-                "Policy Document"
+                "Policy Document",
+                "Code of Practice"
             ]
         },
         "food_vehicles": {
