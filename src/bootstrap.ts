@@ -204,6 +204,7 @@ const MIME_TYPES: Record<string, string> = {
     png: 'image/png',
     jpg: 'image/jpeg',
     jpeg: 'image/jpeg',
+    pdf: 'application/pdf',
 };
 
 async function uploadLocalImage(strapi: Core.Strapi, fileName: string) {
@@ -216,6 +217,21 @@ async function uploadLocalImage(strapi: Core.Strapi, fileName: string) {
             filepath,
             originalFilename: fileName,
             mimetype: MIME_TYPES[ext] || 'application/octet-stream',
+            size,
+        },
+    });
+    return uploaded;
+}
+
+async function uploadSonPreview(strapi: Core.Strapi, fileName: string) {
+    const filepath = path.join(process.cwd(), 'src', 'seed-assets', 'son-previews', fileName);
+    const { size } = fs.statSync(filepath);
+    const [uploaded] = await strapi.plugin('upload').service('upload').upload({
+        data: {},
+        files: {
+            filepath,
+            originalFilename: fileName,
+            mimetype: MIME_TYPES.pdf,
             size,
         },
     });
@@ -879,6 +895,54 @@ async function seedSampleData(strapi: Core.Strapi) {
             await strapi.entityService.create('api::guideline-document.guideline-document', { data: doc as any });
         }
         strapi.log.info('✅ Guideline documents seeded');
+    }
+
+    // Seed SON's approved first-page previews as separate resources. These are
+    // deliberately Preview entries—not downloadable copies of the full standards.
+    const sonMember = await strapi.db.query('api::member-organization.member-organization').findOne({
+        where: { name: 'Standards Organisation of Nigeria (SON)' },
+    }) as any;
+    const sonPreviewDocuments = [
+        { reference_number: 'NIS 121', title: 'Standard for Wheat Flour', publication_year: 2015, document_type: 'Standard', resource_group: 'Flour & Cereals', food_vehicles: 'Wheat Flour', preview: 'nis-121-wheat-flour-preview.pdf' },
+        { reference_number: 'NIS 396', title: 'Standard for Wheat Semolina', publication_year: 2015, document_type: 'Standard', resource_group: 'Flour & Cereals', food_vehicles: 'Wheat Semolina', preview: 'nis-396-wheat-semolina-preview.pdf' },
+        { reference_number: 'NIS 718', title: 'Standard for Maize Grit', publication_year: 2010, document_type: 'Standard', resource_group: 'Flour & Cereals', food_vehicles: 'Maize Grit', preview: 'nis-718-maize-grit-preview.pdf' },
+        { reference_number: 'NIS 723', title: 'Standard for Maize Flour', publication_year: 2015, document_type: 'Standard', resource_group: 'Flour & Cereals', food_vehicles: 'Maize Flour', preview: 'nis-723-maize-flour-preview.pdf' },
+        { reference_number: 'NIS 1224', title: 'Fortified Rice Kernels — Specification', publication_year: 2025, document_type: 'Standard', resource_group: 'Flour & Cereals', food_vehicles: 'Fortified Rice', preview: 'nis-1224-rice-kernels-preview.pdf' },
+        { reference_number: 'NCP 0124', title: 'Code of Practice for Processing and Packaging of Milled Fortified Rice', publication_year: 2024, document_type: 'Code of Practice', resource_group: 'Flour & Cereals', food_vehicles: 'Fortified Rice', preview: 'ncp-0124-fortified-rice-preview.pdf' },
+        { reference_number: 'NIS 230', title: 'Standard for Edible Refined Palm Oil and its Processed Forms', publication_year: 2000, document_type: 'Standard', resource_group: 'Oils & Fats', food_vehicles: 'Edible Refined Palm Oil', preview: 'nis-230-palm-oil-preview.pdf' },
+        { reference_number: 'NIS ARS 58', title: 'White Sugar — Specification', publication_year: 2019, document_type: 'Standard', resource_group: 'Sugar', food_vehicles: 'White Sugar', preview: 'nis-ars-58-white-sugar-preview.pdf' },
+        { reference_number: 'NIS ARS 876', title: 'Brown Sugars — Specification', publication_year: 2019, document_type: 'Standard', resource_group: 'Sugar', food_vehicles: 'Brown Sugar', preview: 'nis-ars-876-brown-sugar-preview.pdf' },
+        { reference_number: 'NIS 293', title: 'Standard for Bouillons', publication_year: 2024, document_type: 'Standard', resource_group: 'Bouillon', food_vehicles: 'Bouillon', preview: 'nis-293-bouillons-preview.pdf' },
+        { reference_number: 'NCP 0123', title: 'Code of Practice for Bouillon Fortification', publication_year: 2024, document_type: 'Code of Practice', resource_group: 'Bouillon', food_vehicles: 'Bouillon', preview: 'ncp-0123-bouillon-preview.pdf' },
+        { reference_number: 'NIS 475', title: 'Food Fortification Premix — Specifications', publication_year: 2025, document_type: 'Standard', resource_group: 'Premix', food_vehicles: 'Food Fortification Premix', preview: 'nis-475-premix-preview.pdf' },
+    ];
+
+    if (sonMember) {
+        for (const document of sonPreviewDocuments) {
+            const existing = await strapi.db.query('api::guideline-document.guideline-document').findOne({
+                where: { reference_number: document.reference_number },
+            });
+            if (existing) continue;
+
+            const { preview, ...resourceData } = document;
+            const file = await uploadSonPreview(strapi, preview);
+            await strapi.entityService.create('api::guideline-document.guideline-document', {
+                data: {
+                    ...resourceData,
+                    description: `First-page preview of ${resourceData.reference_number}, published with acknowledgement to the Standards Organisation of Nigeria (SON).`,
+                    category: 'General',
+                    agency: 'SON',
+                    access_type: 'Preview',
+                    published_date: `${resourceData.publication_year}-01-01`,
+                    issuing_organization: sonMember.id,
+                    file: file.id,
+                    is_featured: false,
+                    status: 'Current',
+                    publishedAt: new Date(),
+                } as any,
+            });
+        }
+        strapi.log.info('✅ SON first-page resource previews seeded');
     }
 
     // Seed Partners
