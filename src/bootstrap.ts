@@ -118,6 +118,10 @@ const bootstrap = async ({ strapi }: { strapi: Core.Strapi }) => {
     // Seed real governance representative profiles (idempotent, runs in all environments)
     await seedGovernanceRepresentatives(strapi);
 
+    // These are production content dependencies, not development sample data.
+    await ensureMemberOrganizations(strapi);
+    await seedSonResourcePreviews(strapi);
+
     // Seed a placeholder Privacy Policy so the page has content in every environment,
     // including production — real legal copy will replace this later.
     await seedPrivacyPolicy(strapi);
@@ -480,6 +484,72 @@ async function seedAboutPage(strapi: Core.Strapi) {
     }
 }
 
+const MEMBER_ORGANIZATIONS: { name: string; category: string; logoKey?: keyof typeof ORG_LOGO_FILES }[] = [
+    { name: 'Standards Organisation of Nigeria (SON)', category: 'Core Members', logoKey: 'SON' },
+    { name: 'National Agency for Food and Drug Administration and Control (NAFDAC)', category: 'Core Members', logoKey: 'NAFDAC' },
+    { name: 'Federal Ministry of Education (FME)', category: 'Core Members' },
+    { name: 'Federal Competition and Consumer Protection Commission (FCCPC)', category: 'Core Members', logoKey: 'FCCPC' },
+    { name: 'Federal Ministry of Health and Social Welfare (FMoHSW) — Nutrition Department', category: 'Core Members', logoKey: 'FMOHSW' },
+    { name: 'Federal Ministry of Agriculture and Food Security (FMAFS)', category: 'Core Members' },
+    { name: 'Federal Ministry of Budget and Economic Planning (FMBEP)', category: 'Core Members' },
+    { name: 'Institute of Public Analysts of Nigeria (IPAN)', category: 'Core Members' },
+    { name: 'Federal Ministry of Information and National Orientation (FMINO)', category: 'Core Members' },
+    { name: 'Industry', category: 'Core Members' },
+    { name: 'Development Partners (GAIN, HKI, TechnoServe, WFP, UNICEF, etc.)', category: 'Stakeholders' },
+    { name: 'Academia', category: 'Stakeholders' },
+    { name: 'Professional Associations (e.g., NIFST, NSN)', category: 'Stakeholders' },
+    { name: 'Civil Society Organisations (CSOs) / Non-Governmental Organisations (NGOs)', category: 'Stakeholders' },
+    { name: 'Media', category: 'Stakeholders' },
+];
+
+async function ensureMemberOrganizations(strapi: Core.Strapi) {
+    const rows = await strapi.db.query('api::member-organization.member-organization').findMany({ populate: ['logo'] }) as any[];
+    for (let index = 0; index < MEMBER_ORGANIZATIONS.length; index++) {
+        const member = MEMBER_ORGANIZATIONS[index];
+        const existing = rows.find((row) => row.name === member.name);
+        if (!existing) {
+            const logo = member.logoKey ? (await uploadLocalImage(strapi, ORG_LOGO_FILES[member.logoKey])).id : undefined;
+            await strapi.entityService.create('api::member-organization.member-organization', {
+                data: { name: member.name, category: member.category, logo, order: index + 1, publishedAt: new Date() } as any,
+            });
+        } else if (member.logoKey && !existing.logo) {
+            const logo = (await uploadLocalImage(strapi, ORG_LOGO_FILES[member.logoKey])).id;
+            await strapi.documents('api::member-organization.member-organization').update({ documentId: existing.documentId, data: { logo } as any });
+            await strapi.documents('api::member-organization.member-organization').publish({ documentId: existing.documentId });
+        }
+    }
+    strapi.log.info('✅ Member organizations seeded');
+}
+
+const SON_PREVIEWS = [
+    ['NIS 121', 'Standard for Wheat Flour', 2015, 'Standard', 'Flour & Cereals', 'Wheat Flour', 'nis-121-wheat-flour-preview.pdf'],
+    ['NIS 396', 'Standard for Wheat Semolina', 2015, 'Standard', 'Flour & Cereals', 'Wheat Semolina', 'nis-396-wheat-semolina-preview.pdf'],
+    ['NIS 718', 'Standard for Maize Grit', 2010, 'Standard', 'Flour & Cereals', 'Maize Grit', 'nis-718-maize-grit-preview.pdf'],
+    ['NIS 723', 'Standard for Maize Flour', 2015, 'Standard', 'Flour & Cereals', 'Maize Flour', 'nis-723-maize-flour-preview.pdf'],
+    ['NIS 1224', 'Fortified Rice Kernels — Specification', 2025, 'Standard', 'Flour & Cereals', 'Fortified Rice', 'nis-1224-rice-kernels-preview.pdf'],
+    ['NCP 0124', 'Code of Practice for Processing and Packaging of Milled Fortified Rice', 2024, 'Code of Practice', 'Flour & Cereals', 'Fortified Rice', 'ncp-0124-fortified-rice-preview.pdf'],
+    ['NIS 230', 'Standard for Edible Refined Palm Oil and its Processed Forms', 2000, 'Standard', 'Oils & Fats', 'Edible Refined Palm Oil', 'nis-230-palm-oil-preview.pdf'],
+    ['NIS ARS 58', 'White Sugar — Specification', 2019, 'Standard', 'Sugar', 'White Sugar', 'nis-ars-58-white-sugar-preview.pdf'],
+    ['NIS ARS 876', 'Brown Sugars — Specification', 2019, 'Standard', 'Sugar', 'Brown Sugar', 'nis-ars-876-brown-sugar-preview.pdf'],
+    ['NIS 293', 'Standard for Bouillons', 2024, 'Standard', 'Bouillon', 'Bouillon', 'nis-293-bouillons-preview.pdf'],
+    ['NCP 0123', 'Code of Practice for Bouillon Fortification', 2024, 'Code of Practice', 'Bouillon', 'Bouillon', 'ncp-0123-bouillon-preview.pdf'],
+    ['NIS 475', 'Food Fortification Premix — Specifications', 2025, 'Standard', 'Premix', 'Food Fortification Premix', 'nis-475-premix-preview.pdf'],
+] as const;
+
+async function seedSonResourcePreviews(strapi: Core.Strapi) {
+    const son = await strapi.db.query('api::member-organization.member-organization').findOne({ where: { name: 'Standards Organisation of Nigeria (SON)' } }) as any;
+    if (!son) return;
+    for (const [reference_number, title, publication_year, document_type, resource_group, food_vehicles, preview] of SON_PREVIEWS) {
+        const existing = await strapi.db.query('api::guideline-document.guideline-document').findOne({ where: { reference_number } });
+        if (existing) continue;
+        const file = await uploadSonPreview(strapi, preview);
+        await strapi.entityService.create('api::guideline-document.guideline-document', {
+            data: { title, description: `First-page preview of ${reference_number}, published with acknowledgement to the Standards Organisation of Nigeria (SON).`, category: 'General', agency: 'SON', access_type: 'Preview', reference_number, resource_group, publication_year, document_type, food_vehicles, published_date: `${publication_year}-01-01`, issuing_organization: son.id, file: file.id, is_featured: false, status: 'Current', publishedAt: new Date() } as any,
+        });
+    }
+    strapi.log.info('✅ SON first-page resource previews seeded');
+}
+
 async function seedSampleData(strapi: Core.Strapi) {
     // Seed Global Settings
     const existingSettings = await strapi.entityService.findMany(
@@ -734,49 +804,7 @@ async function seedSampleData(strapi: Core.Strapi) {
         }
     }
 
-    // Seed Member Organizations
-    const membersData: { name: string; category: string; logoKey?: string }[] = [
-        { name: 'Standards Organisation of Nigeria (SON)', category: 'Core Members', logoKey: 'SON' },
-        { name: 'National Agency for Food and Drug Administration and Control (NAFDAC)', category: 'Core Members', logoKey: 'NAFDAC' },
-        { name: 'Federal Ministry of Education (FME)', category: 'Core Members' },
-        { name: 'Federal Competition and Consumer Protection Commission (FCCPC)', category: 'Core Members', logoKey: 'FCCPC' },
-        { name: 'Federal Ministry of Health and Social Welfare (FMoHSW) — Nutrition Department', category: 'Core Members', logoKey: 'FMOHSW' },
-        { name: 'Federal Ministry of Agriculture and Food Security (FMAFS)', category: 'Core Members' },
-        { name: 'Federal Ministry of Budget and Economic Planning (FMBEP)', category: 'Core Members' },
-        { name: 'Institute of Public Analysts of Nigeria (IPAN)', category: 'Core Members' },
-        { name: 'Federal Ministry of Information and National Orientation (FMINO)', category: 'Core Members' },
-        { name: 'Industry', category: 'Core Members' },
-        { name: 'Development Partners (GAIN, HKI, TechnoServe, WFP, UNICEF, etc.)', category: 'Stakeholders' },
-        { name: 'Academia', category: 'Stakeholders' },
-        { name: 'Professional Associations (e.g., NIFST, NSN)', category: 'Stakeholders' },
-        { name: 'Civil Society Organisations (CSOs) / Non-Governmental Organisations (NGOs)', category: 'Stakeholders' },
-        { name: 'Media', category: 'Stakeholders' },
-    ];
-    const memberRows = await strapi.db.query('api::member-organization.member-organization').findMany({
-        populate: ['logo'],
-    }) as any[];
-    for (let i = 0; i < membersData.length; i++) {
-        const member = membersData[i];
-        const existing = memberRows.find((row) => row.name === member.name);
-        if (!existing) {
-            const { logoKey, ...rest } = member;
-            const logo = logoKey ? (await uploadLocalImage(strapi, ORG_LOGO_FILES[logoKey])).id : undefined;
-            await strapi.entityService.create('api::member-organization.member-organization', {
-                data: { ...rest, logo, order: i + 1, publishedAt: new Date() } as any,
-            });
-            continue;
-        }
-
-        if (member.logoKey && !existing.logo) {
-            const logo = (await uploadLocalImage(strapi, ORG_LOGO_FILES[member.logoKey])).id;
-            await strapi.documents('api::member-organization.member-organization').update({
-                documentId: existing.documentId,
-                data: { logo } as any,
-            });
-            await strapi.documents('api::member-organization.member-organization').publish({ documentId: existing.documentId });
-        }
-    }
-    strapi.log.info('✅ Member organizations seeded');
+    await ensureMemberOrganizations(strapi);
 
     // (Carousels require images, skipping automated seeding)
 
@@ -892,53 +920,7 @@ async function seedSampleData(strapi: Core.Strapi) {
         strapi.log.info('✅ Guideline documents seeded');
     }
 
-    // Seed SON's approved first-page previews as separate resources. These are
-    // deliberately Preview entries—not downloadable copies of the full standards.
-    const sonMember = await strapi.db.query('api::member-organization.member-organization').findOne({
-        where: { name: 'Standards Organisation of Nigeria (SON)' },
-    }) as any;
-    const sonPreviewDocuments = [
-        { reference_number: 'NIS 121', title: 'Standard for Wheat Flour', publication_year: 2015, document_type: 'Standard', resource_group: 'Flour & Cereals', food_vehicles: 'Wheat Flour', preview: 'nis-121-wheat-flour-preview.pdf' },
-        { reference_number: 'NIS 396', title: 'Standard for Wheat Semolina', publication_year: 2015, document_type: 'Standard', resource_group: 'Flour & Cereals', food_vehicles: 'Wheat Semolina', preview: 'nis-396-wheat-semolina-preview.pdf' },
-        { reference_number: 'NIS 718', title: 'Standard for Maize Grit', publication_year: 2010, document_type: 'Standard', resource_group: 'Flour & Cereals', food_vehicles: 'Maize Grit', preview: 'nis-718-maize-grit-preview.pdf' },
-        { reference_number: 'NIS 723', title: 'Standard for Maize Flour', publication_year: 2015, document_type: 'Standard', resource_group: 'Flour & Cereals', food_vehicles: 'Maize Flour', preview: 'nis-723-maize-flour-preview.pdf' },
-        { reference_number: 'NIS 1224', title: 'Fortified Rice Kernels — Specification', publication_year: 2025, document_type: 'Standard', resource_group: 'Flour & Cereals', food_vehicles: 'Fortified Rice', preview: 'nis-1224-rice-kernels-preview.pdf' },
-        { reference_number: 'NCP 0124', title: 'Code of Practice for Processing and Packaging of Milled Fortified Rice', publication_year: 2024, document_type: 'Code of Practice', resource_group: 'Flour & Cereals', food_vehicles: 'Fortified Rice', preview: 'ncp-0124-fortified-rice-preview.pdf' },
-        { reference_number: 'NIS 230', title: 'Standard for Edible Refined Palm Oil and its Processed Forms', publication_year: 2000, document_type: 'Standard', resource_group: 'Oils & Fats', food_vehicles: 'Edible Refined Palm Oil', preview: 'nis-230-palm-oil-preview.pdf' },
-        { reference_number: 'NIS ARS 58', title: 'White Sugar — Specification', publication_year: 2019, document_type: 'Standard', resource_group: 'Sugar', food_vehicles: 'White Sugar', preview: 'nis-ars-58-white-sugar-preview.pdf' },
-        { reference_number: 'NIS ARS 876', title: 'Brown Sugars — Specification', publication_year: 2019, document_type: 'Standard', resource_group: 'Sugar', food_vehicles: 'Brown Sugar', preview: 'nis-ars-876-brown-sugar-preview.pdf' },
-        { reference_number: 'NIS 293', title: 'Standard for Bouillons', publication_year: 2024, document_type: 'Standard', resource_group: 'Bouillon', food_vehicles: 'Bouillon', preview: 'nis-293-bouillons-preview.pdf' },
-        { reference_number: 'NCP 0123', title: 'Code of Practice for Bouillon Fortification', publication_year: 2024, document_type: 'Code of Practice', resource_group: 'Bouillon', food_vehicles: 'Bouillon', preview: 'ncp-0123-bouillon-preview.pdf' },
-        { reference_number: 'NIS 475', title: 'Food Fortification Premix — Specifications', publication_year: 2025, document_type: 'Standard', resource_group: 'Premix', food_vehicles: 'Food Fortification Premix', preview: 'nis-475-premix-preview.pdf' },
-    ];
-
-    if (sonMember) {
-        for (const document of sonPreviewDocuments) {
-            const existing = await strapi.db.query('api::guideline-document.guideline-document').findOne({
-                where: { reference_number: document.reference_number },
-            });
-            if (existing) continue;
-
-            const { preview, ...resourceData } = document;
-            const file = await uploadSonPreview(strapi, preview);
-            await strapi.entityService.create('api::guideline-document.guideline-document', {
-                data: {
-                    ...resourceData,
-                    description: `First-page preview of ${resourceData.reference_number}, published with acknowledgement to the Standards Organisation of Nigeria (SON).`,
-                    category: 'General',
-                    agency: 'SON',
-                    access_type: 'Preview',
-                    published_date: `${resourceData.publication_year}-01-01`,
-                    issuing_organization: sonMember.id,
-                    file: file.id,
-                    is_featured: false,
-                    status: 'Current',
-                    publishedAt: new Date(),
-                } as any,
-            });
-        }
-        strapi.log.info('✅ SON first-page resource previews seeded');
-    }
+    await seedSonResourcePreviews(strapi);
 
     // Seed Partners
     const existingPartners = await strapi.entityService.findMany(
