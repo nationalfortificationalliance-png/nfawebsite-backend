@@ -752,36 +752,31 @@ async function seedSampleData(strapi: Core.Strapi) {
         { name: 'Civil Society Organisations (CSOs) / Non-Governmental Organisations (NGOs)', category: 'Stakeholders' },
         { name: 'Media', category: 'Stakeholders' },
     ];
-    const existingMembers = await strapi.entityService.findMany(
-        'api::member-organization.member-organization',
-        {}
-    );
-    if (!existingMembers || (existingMembers as any[]).length === 0) {
-        for (let i = 0; i < membersData.length; i++) {
-            const { logoKey, ...rest } = membersData[i];
+    const memberRows = await strapi.db.query('api::member-organization.member-organization').findMany({
+        populate: ['logo'],
+    }) as any[];
+    for (let i = 0; i < membersData.length; i++) {
+        const member = membersData[i];
+        const existing = memberRows.find((row) => row.name === member.name);
+        if (!existing) {
+            const { logoKey, ...rest } = member;
             const logo = logoKey ? (await uploadLocalImage(strapi, ORG_LOGO_FILES[logoKey])).id : undefined;
             await strapi.entityService.create('api::member-organization.member-organization', {
                 data: { ...rest, logo, order: i + 1, publishedAt: new Date() } as any,
             });
+            continue;
         }
-        strapi.log.info('✅ Member organizations seeded');
-    } else {
-        // Backfill logo media on rows created before the logo field existed
-        const memberRows = await strapi.db.query('api::member-organization.member-organization').findMany({
-            populate: ['logo'],
-        });
-        for (const row of memberRows as any[]) {
-            const match = membersData.find((m) => m.name === row.name);
-            if (match?.logoKey && !row.logo) {
-                const logo = (await uploadLocalImage(strapi, ORG_LOGO_FILES[match.logoKey])).id;
-                await strapi.documents('api::member-organization.member-organization').update({
-                    documentId: row.documentId,
-                    data: { logo } as any,
-                });
-                await strapi.documents('api::member-organization.member-organization').publish({ documentId: row.documentId });
-            }
+
+        if (member.logoKey && !existing.logo) {
+            const logo = (await uploadLocalImage(strapi, ORG_LOGO_FILES[member.logoKey])).id;
+            await strapi.documents('api::member-organization.member-organization').update({
+                documentId: existing.documentId,
+                data: { logo } as any,
+            });
+            await strapi.documents('api::member-organization.member-organization').publish({ documentId: existing.documentId });
         }
     }
+    strapi.log.info('✅ Member organizations seeded');
 
     // (Carousels require images, skipping automated seeding)
 
